@@ -8,8 +8,6 @@
 
 package org.saltyrtc.tasks.webrtc;
 
-import org.msgpack.core.MessageBufferPacker;
-import org.msgpack.core.MessagePack;
 import org.saltyrtc.client.annotations.NonNull;
 import org.saltyrtc.client.annotations.Nullable;
 import org.saltyrtc.client.exceptions.ConnectionException;
@@ -24,7 +22,9 @@ import org.saltyrtc.client.tasks.Task;
 import org.saltyrtc.tasks.webrtc.exceptions.IllegalStateError;
 import org.slf4j.Logger;
 import org.webrtc.IceCandidate;
+import org.webrtc.MediaConstraints;
 import org.webrtc.PeerConnection;
+import org.webrtc.SdpObserver;
 import org.webrtc.SessionDescription;
 
 import java.util.ArrayList;
@@ -42,6 +42,10 @@ import java.util.Set;
  * to users. The signalling channel will persist after being handed over to a dedicated data channel
  * once the peer-to-peer connection has been set up. Therefore, further signalling communication
  * between the peers does not require a dedicated WebSocket connection over a SaltyRTC server.
+ *
+ * The task needs to be initialized with the WebRTC peer connection.
+ *
+ * To send offer/answer/candidates, use the corresponding public methods on this task.
  */
 public class WebRTCTask implements Task {
 
@@ -97,8 +101,10 @@ public class WebRTCTask implements Task {
 
     @Override
     public void onPeerHandshakeDone() {
-        // Do nothing
         this.getLogger().info("DONE");
+        if (this.signaling.getRole() == SignalingRole.Initiator) {
+            this.createAndSendOffer();
+        }
     }
 
     /**
@@ -135,6 +141,23 @@ public class WebRTCTask implements Task {
     @Override
     public void onTaskMessage(TaskMessage message) {
         this.getLogger().info("New task message arrived");
+        final String type = message.getType();
+        switch (type) {
+            case "offer":
+                SessionDescription sd = this.validateOffer(message);
+                this.processOffer(sd);
+                break;
+            case "answer":
+                SessionDescription sd = this.validateAnswer(message);
+                this.processAnswer(sd);
+                break;
+            case "candidate":
+                List<IceCandidate> candidates = this.validateCandidates(message);
+                this.processCandidates(candidates);
+                break;
+            default:
+                this.getLogger().error("Received message with unknown type: " + type);
+        }
     }
 
     /**
@@ -189,10 +212,38 @@ public class WebRTCTask implements Task {
     }
 
     /**
-     * Return a new MessageBufferPacker instance.
+     * Create a WebRTC offer and send it to the responder.
+     *
+     * @throws IllegalStateError if the responder tries to send an offer.
      */
-    private MessageBufferPacker getPacker() {
-        return new MessagePack.PackerConfig().newBufferPacker();
+    private void createAndSendOffer() {
+        if (this.signaling.getRole() != SignalingRole.Initiator) {
+            throw new IllegalStateError("Only the initiator may send an offer");
+        }
+
+        this.getLogger().debug("Creating a WebRTC offer");
+        this.pc.createOffer(new SdpObserver() {
+            @Override
+            public void onCreateSuccess(SessionDescription sessionDescription) {
+                try {
+                    WebRTCTask.this.sendOffer(sessionDescription);
+                } catch (ProtocolException | SignalingException | ConnectionException e) {
+                    e.printStackTrace();
+                    WebRTCTask.this.getLogger().warn("Could not send offer", e);
+                }
+            }
+
+            @Override
+            public void onCreateFailure(String s) {
+                WebRTCTask.this.getLogger().warn("Could not create offer");
+            }
+
+            @Override
+            public void onSetSuccess() { }
+
+            @Override
+            public void onSetFailure(String s) { }
+        }, new MediaConstraints());
     }
 
     /**
@@ -216,6 +267,7 @@ public class WebRTCTask implements Task {
         if (sd.type != SessionDescription.Type.valueOf("rollback")) {
             data.put("sdp", sd.description);
         }
+        this.getLogger().debug("Sending offer");
         this.signaling.sendTaskMessage(new TaskMessage("offer", data));
     }
 
@@ -240,6 +292,7 @@ public class WebRTCTask implements Task {
         if (sd.type != SessionDescription.Type.valueOf("rollback")) {
             data.put("sdp", sd.description);
         }
+        this.getLogger().debug("Sending answer");
         this.signaling.sendTaskMessage(new TaskMessage("answer", data));
     }
 
@@ -257,6 +310,7 @@ public class WebRTCTask implements Task {
             candidateList.add(candidateMap);
         }
         data.put("candidates", candidateList);
+        this.getLogger().debug("Sending candidates");
         this.signaling.sendTaskMessage(new TaskMessage("candidate", data));
     }
 
