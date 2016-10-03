@@ -19,8 +19,8 @@ import org.saltyrtc.client.keystore.KeyStore;
 import org.saltyrtc.client.signaling.state.SignalingState;
 import org.saltyrtc.client.tasks.Task;
 import org.saltyrtc.tasks.webrtc.Config;
-import org.saltyrtc.tasks.webrtc.DummyTask;
 import org.saltyrtc.tasks.webrtc.SSLContextHelper;
+import org.saltyrtc.tasks.webrtc.WebRTCTask;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,12 +54,12 @@ public class ConnectionTest {
         initiator = new SaltyRTCBuilder()
                 .connectTo(Config.SALTYRTC_HOST, Config.SALTYRTC_PORT, sslContext)
                 .withKeyStore(new KeyStore())
-                .usingTasks(new Task[]{ new DummyTask() })
+                .usingTasks(new Task[]{ new WebRTCTask() })
                 .asInitiator();
         responder = new SaltyRTCBuilder()
                 .connectTo(Config.SALTYRTC_HOST, Config.SALTYRTC_PORT, sslContext)
                 .withKeyStore(new KeyStore())
-                .usingTasks(new Task[]{ new DummyTask() })
+                .usingTasks(new Task[]{ new WebRTCTask() })
                 .initiatorInfo(initiator.getPublicPermanentKey(), initiator.getAuthToken())
                 .asResponder();
 
