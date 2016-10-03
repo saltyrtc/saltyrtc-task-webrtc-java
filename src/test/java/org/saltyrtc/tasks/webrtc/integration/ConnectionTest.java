@@ -6,7 +6,7 @@
  * copied, modified, or distributed except according to those terms.
  */
 
-package org.saltyrtc.task.webrtc.integration;
+package org.saltyrtc.tasks.webrtc.integration;
 
 import org.junit.After;
 import org.junit.Before;
@@ -18,9 +18,9 @@ import org.saltyrtc.client.events.SignalingStateChangedEvent;
 import org.saltyrtc.client.keystore.KeyStore;
 import org.saltyrtc.client.signaling.state.SignalingState;
 import org.saltyrtc.client.tasks.Task;
-import org.saltyrtc.task.webrtc.Config;
-import org.saltyrtc.task.webrtc.DummyTask;
-import org.saltyrtc.task.webrtc.SSLContextHelper;
+import org.saltyrtc.tasks.webrtc.Config;
+import org.saltyrtc.tasks.webrtc.DummyTask;
+import org.saltyrtc.tasks.webrtc.SSLContextHelper;
 
 import java.util.HashMap;
 import java.util.Map;

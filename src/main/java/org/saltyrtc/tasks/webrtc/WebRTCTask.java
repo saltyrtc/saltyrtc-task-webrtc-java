@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) 2016 Threema GmbH / SaltyRTC Contributors
+ *
+ * Licensed under the Apache License, Version 2.0, <see LICENSE-APACHE file>
+ * or the MIT license <see LICENSE-MIT file>, at your option. This file may not be
+ * copied, modified, or distributed except according to those terms.
+ */
+
 package org.saltyrtc.tasks.webrtc;
 
 import org.saltyrtc.client.annotations.NonNull;
@@ -46,6 +54,9 @@ public class WebRTCTask implements Task {
 
     // Effective max packet size
     private Integer maxPacketSize;
+
+    // Signaling interface
+    private SignalingInterface signaling;
 
     @Override
     public void init(SignalingInterface signaling, Map<Object, Object> data) throws ValidationError {
@@ -137,5 +148,10 @@ public class WebRTCTask implements Task {
         map.put(WebRTCTask.FIELD_EXCLUDE, this.exclude);
         map.put(WebRTCTask.FIELD_MAX_PACKET_SIZE, WebRTCTask.MAX_PACKET_SIZE);
         return map;
+    }
+
+    @NonNull
+    public SignalingInterface getSignaling() {
+        return this.signaling;
     }
 }

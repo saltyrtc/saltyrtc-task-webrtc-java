@@ -1,4 +1,4 @@
-package org.saltyrtc.task.webrtc;
+package org.saltyrtc.tasks.webrtc;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
