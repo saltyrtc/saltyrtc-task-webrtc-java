@@ -35,9 +35,6 @@ import java.util.Set;
  */
 public class WebRTCTask implements Task {
 
-    // Logger
-    private static final Logger LOG = org.slf4j.LoggerFactory.getLogger("SaltyRTC.WebRTC");
-
     // Constants as defined by the specification
     private static final String PROTOCOL_NAME = "v0.webrtc.tasks.saltyrtc.org";
     private static final Integer MAX_PACKET_SIZE = 16384;
@@ -58,6 +55,16 @@ public class WebRTCTask implements Task {
     // Signaling interface
     private SignalingInterface signaling;
 
+    private Logger getLogger() {
+        String name;
+        if (this.signaling == null) {
+            name = "SaltyRTC.WebRTC";
+        } else {
+            name = "SaltyRTC.WebRTC." + this.signaling.getRole().name();
+        }
+        return org.slf4j.LoggerFactory.getLogger(name);
+    }
+
     @Override
     public void init(SignalingInterface signaling, Map<Object, Object> data) throws ValidationError {
         this.processExcludeList(data.get(FIELD_EXCLUDE));
@@ -68,6 +75,7 @@ public class WebRTCTask implements Task {
     @Override
     public void onPeerHandshakeDone() {
         // Do nothing
+        this.getLogger().info("DONE");
     }
 
     /**
@@ -99,17 +107,19 @@ public class WebRTCTask implements Task {
         } else {
             this.maxPacketSize = Math.min(maxPacketSize, MAX_PACKET_SIZE);
         }
-
     }
 
     @Override
     public void onTaskMessage(TaskMessage message) {
-        LOG.info("New task message arrived");
+        this.getLogger().info("New task message arrived");
     }
 
+    /**
+     * Send a signaling message *through the data channel*.
+     */
     @Override
     public void sendSignalingMessage(byte[] payload) {
-        LOG.info("TODO: Send signaling message");
+        this.getLogger().info("TODO: Send signaling message");
     }
 
     @NonNull
