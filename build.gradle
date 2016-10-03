@@ -35,6 +35,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    lintOptions {
+        abortOnError false
+    }
 }
 
 // In this section you declare where to find the dependencies of your project
@@ -46,7 +49,9 @@ repositories {
 // In this section you declare the dependencies for your production and test code
 dependencies {
     // SaltyRTC
-    compile 'com.github.saltyrtc:saltyrtc-client-java:60ef65d'
+    compile('com.github.saltyrtc:saltyrtc-client-java:8344cc5') {
+        exclude group: 'org.json'
+    }
 
     // The production code uses the SLF4J logging API at compile time
     compile 'org.slf4j:slf4j-api:1.7.21'
