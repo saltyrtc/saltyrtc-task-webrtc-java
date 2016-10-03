@@ -42,7 +42,9 @@ public class ConnectionTest {
     }
 
     private SaltyRTC initiator;
+    private WebRTCTask initiatorTask;
     private SaltyRTC responder;
+    private WebRTCTask responderTask;
     private Map<String, Boolean> eventsCalled;
 
     @Before
@@ -50,23 +52,27 @@ public class ConnectionTest {
         // Get SSL context
         final SSLContext sslContext = SSLContextHelper.getSSLContext();
 
+        // Initialize tasks
+        this.initiatorTask = new WebRTCTask();
+        this.responderTask = new WebRTCTask();
+
         // Create SaltyRTC instances for initiator and responder
-        initiator = new SaltyRTCBuilder()
+        this.initiator = new SaltyRTCBuilder()
                 .connectTo(Config.SALTYRTC_HOST, Config.SALTYRTC_PORT, sslContext)
                 .withKeyStore(new KeyStore())
-                .usingTasks(new Task[]{ new WebRTCTask() })
+                .usingTasks(new Task[]{ this.initiatorTask })
                 .asInitiator();
-        responder = new SaltyRTCBuilder()
+        this.responder = new SaltyRTCBuilder()
                 .connectTo(Config.SALTYRTC_HOST, Config.SALTYRTC_PORT, sslContext)
                 .withKeyStore(new KeyStore())
-                .usingTasks(new Task[]{ new WebRTCTask() })
+                .usingTasks(new Task[]{ this.responderTask })
                 .initiatorInfo(initiator.getPublicPermanentKey(), initiator.getAuthToken())
                 .asResponder();
 
         // Enable verbose debug mode
         if (Config.VERBOSE) {
-            initiator.setDebug(true);
-            responder.setDebug(true);
+            this.initiator.setDebug(true);
+            this.responder.setDebug(true);
         }
 
         // Initiate event registry
@@ -78,7 +84,7 @@ public class ConnectionTest {
         }
 
         // Register event handlers
-        initiator.events.signalingStateChanged.register(new EventHandler<SignalingStateChangedEvent>() {
+        this.initiator.events.signalingStateChanged.register(new EventHandler<SignalingStateChangedEvent>() {
             @Override
             public boolean handle(SignalingStateChangedEvent event) {
                 switch (event.getState()) {
@@ -95,7 +101,7 @@ public class ConnectionTest {
                 return false;
             }
         });
-        responder.events.signalingStateChanged.register(new EventHandler<SignalingStateChangedEvent>() {
+        this.responder.events.signalingStateChanged.register(new EventHandler<SignalingStateChangedEvent>() {
             @Override
             public boolean handle(SignalingStateChangedEvent event) {
                 switch (event.getState()) {
@@ -115,13 +121,13 @@ public class ConnectionTest {
     }
 
     @Test
-    public void testConnectionSpeed() throws Exception {
+    public void testConnectSpeed() throws Exception {
         // Max 1s for handshake
         final int MAX_DURATION = 1000;
 
         // Latches to test connection state
         final CountDownLatch connectedPeers = new CountDownLatch(2);
-        initiator.events.signalingStateChanged.register(new EventHandler<SignalingStateChangedEvent>() {
+        this.initiator.events.signalingStateChanged.register(new EventHandler<SignalingStateChangedEvent>() {
             @Override
             public boolean handle(SignalingStateChangedEvent event) {
                 if (event.getState() == SignalingState.TASK) {
@@ -130,7 +136,7 @@ public class ConnectionTest {
                 return false;
             }
         });
-        responder.events.signalingStateChanged.register(new EventHandler<SignalingStateChangedEvent>() {
+        this.responder.events.signalingStateChanged.register(new EventHandler<SignalingStateChangedEvent>() {
             @Override
             public boolean handle(SignalingStateChangedEvent event) {
                 if (event.getState() == SignalingState.TASK) {
@@ -160,6 +166,54 @@ public class ConnectionTest {
 
         assertTrue("Duration time (" + durationMs + "ms) should be less than " + MAX_DURATION + "ms",
                    durationMs < MAX_DURATION);
+    }
+
+    @Test
+    public void testHandover() throws Exception {
+        // Max 1.5s until handover
+        final int MAX_DURATION = 1500;
+
+        // Latches to test connection state
+        final CountDownLatch connectedPeers = new CountDownLatch(2);
+        initiator.events.signalingStateChanged.register(new EventHandler<SignalingStateChangedEvent>() {
+            @Override
+            public boolean handle(SignalingStateChangedEvent event) {
+                if (event.getState() == SignalingState.OPEN) {
+                    connectedPeers.countDown();
+                }
+                return false;
+            }
+        });
+        responder.events.signalingStateChanged.register(new EventHandler<SignalingStateChangedEvent>() {
+            @Override
+            public boolean handle(SignalingStateChangedEvent event) {
+                if (event.getState() == SignalingState.OPEN) {
+                    connectedPeers.countDown();
+                }
+                return false;
+            }
+        });
+
+        // Connect server
+        final long startTime = System.nanoTime();
+        initiator.connect();
+        responder.connect();
+
+        // Wait for full handshake
+        final boolean bothConnected = connectedPeers.await(2 * MAX_DURATION, TimeUnit.MILLISECONDS);
+        final long endTime = System.nanoTime();
+        assertTrue(bothConnected);
+        assertFalse(eventsCalled.get("responderError"));
+        assertFalse(eventsCalled.get("initiatorError"));
+        long durationMs = (endTime - startTime) / 1000 / 1000;
+        System.out.println("Full handshake took " + durationMs + " milliseconds");
+
+        // Disconnect
+        responder.disconnect();
+        initiator.disconnect();
+
+        assertTrue("Duration time (" + durationMs + "ms) should be less than " + MAX_DURATION + "ms",
+            durationMs < MAX_DURATION);
     }
 
     @After
