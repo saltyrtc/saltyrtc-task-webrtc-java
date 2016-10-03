@@ -24,9 +24,9 @@ import org.saltyrtc.client.tasks.Task;
 import org.saltyrtc.tasks.webrtc.exceptions.IllegalStateError;
 import org.slf4j.Logger;
 import org.webrtc.IceCandidate;
+import org.webrtc.PeerConnection;
 import org.webrtc.SessionDescription;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -62,8 +62,20 @@ public class WebRTCTask implements Task {
     // Effective max packet size
     private Integer maxPacketSize;
 
-    // Signaling interface
+    // Signaling
     private SignalingInterface signaling;
+
+    // Peer connection
+    @NonNull
+    final private PeerConnection pc;
+
+    /**
+     * Initialize WebRTC task with a WebRTC peer connection.
+     * @param pc A `PeerConnection` instance.
+     */
+    public WebRTCTask(@NonNull PeerConnection pc) {
+        this.pc = pc;
+    }
 
     private Logger getLogger() {
         String name;

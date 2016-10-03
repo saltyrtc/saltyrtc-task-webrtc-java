@@ -28,6 +28,7 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -37,6 +38,11 @@ android {
     }
     lintOptions {
         abortOnError false
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
     }
 }
 
@@ -69,6 +75,7 @@ dependencies {
     // Test dependencies
     testCompile 'org.slf4j:slf4j-simple:1.7.21'
     testCompile 'junit:junit:4.12'
+    androidTestCompile 'junit:junit:4.12'
 }
 
 dependencyVerification {
