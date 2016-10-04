@@ -20,6 +20,9 @@ import org.saltyrtc.client.signaling.SignalingInterface;
 import org.saltyrtc.client.signaling.SignalingRole;
 import org.saltyrtc.client.tasks.Task;
 import org.saltyrtc.tasks.webrtc.exceptions.IllegalStateError;
+import org.saltyrtc.tasks.webrtc.messages.Answer;
+import org.saltyrtc.tasks.webrtc.messages.Candidates;
+import org.saltyrtc.tasks.webrtc.messages.Offer;
 import org.slf4j.Logger;
 import org.webrtc.IceCandidate;
 import org.webrtc.MediaConstraints;
@@ -254,21 +257,14 @@ public class WebRTCTask implements Task {
      */
     public void sendOffer(SessionDescription sd) throws ProtocolException, SignalingException, ConnectionException {
         // Validate
-        if (sd.type != SessionDescription.Type.OFFER) {
-            throw new IllegalArgumentException("Session description must have type 'OFFER'");
-        }
         if (this.signaling.getRole() != SignalingRole.Initiator) {
             throw new IllegalStateError("Only the initiator may send an offer");
         }
+        final Offer offer = new Offer(sd);
 
         // Send message
-        final Map<String, Object> data = new HashMap<>();
-        data.put("type", "offer");
-        if (sd.type != SessionDescription.Type.valueOf("rollback")) {
-            data.put("sdp", sd.description);
-        }
         this.getLogger().debug("Sending offer");
-        this.signaling.sendTaskMessage(new TaskMessage("offer", data));
+        this.signaling.sendTaskMessage(offer.toTaskMessage());
     }
 
     /**
@@ -279,39 +275,26 @@ public class WebRTCTask implements Task {
      */
     public void sendAnswer(SessionDescription sd) throws ProtocolException, SignalingException, ConnectionException {
         // Validate
-        if (sd.type != SessionDescription.Type.ANSWER) {
-            throw new IllegalArgumentException("Session description must have type 'ANSWER'");
-        }
         if (this.signaling.getRole() != SignalingRole.Responder) {
             throw new IllegalStateError("Only the responder may send an answer");
         }
+        final Answer answer = new Answer(sd);
 
         // Send message
-        final Map<String, Object> data = new HashMap<>();
-        data.put("type", "answer");
-        if (sd.type != SessionDescription.Type.valueOf("rollback")) {
-            data.put("sdp", sd.description);
-        }
         this.getLogger().debug("Sending answer");
-        this.signaling.sendTaskMessage(new TaskMessage("answer", data));
+        this.signaling.sendTaskMessage(answer.toTaskMessage());
     }
 
     /**
      * Send one or more candidates to the peer.
      */
-    public void sendCandidates(IceCandidate[] candidates) throws ProtocolException,  SignalingException, ConnectionException {
-        final Map<String, Object> data = new HashMap<>();
-        final List<Map<String, Object>> candidateList = new ArrayList<>();
-        for (IceCandidate candidate : candidates) {
-            final Map<String, Object> candidateMap = new HashMap<>();
-            candidateMap.put("candidate", candidate.sdp);
-            candidateMap.put("sdpMid", candidate.sdpMid); // TODO: Can this be null?
-            candidateMap.put("sdpMLineIndex", candidate.sdpMLineIndex); // TODO: Can this be non-positive?
-            candidateList.add(candidateMap);
-        }
-        data.put("candidates", candidateList);
+    public void sendCandidates(IceCandidate[] iceCandidates) throws ProtocolException,  SignalingException, ConnectionException {
+        // Validate
+        final Candidates candidates = new Candidates(iceCandidates);
+
+        // Send message
         this.getLogger().debug("Sending candidates");
-        this.signaling.sendTaskMessage(new TaskMessage("candidate", data));
+        this.signaling.sendTaskMessage(candidates.toTaskMessage());
     }
 
     /**
