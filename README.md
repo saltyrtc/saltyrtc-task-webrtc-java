@@ -12,6 +12,48 @@ will not work outside of projects.
 The development is still ongoing, the current version is only at alpha-level
 and should not be used for production yet.
 
+## Usage
+
+Instantiate the task with the peer connection.
+
+```java
+final WebRTCTask task = new WebRTCTask(peerConnection);
+```
+
+Then, register a message handler:
+
+```java
+task.setMessageHandler(new MessageHandler() {
+    @Override
+    public void onOffer(SessionDescription sd) {
+        peerConnection.setRemoteDescription(new SdpObserver() {
+            ...
+
+            @Override
+            public void onSetSuccess() {
+                final SessionDescription answer = ...; // Create answer
+                task.sendAnswer(answer);
+            }
+        }, sd);
+    }
+
+    @Override
+    public void onAnswer(SessionDescription sd) {
+        peerConnection.setRemoteDescription(new SdpObserver() { ... }, sd);
+    }
+
+    @Override
+    public void onCandidates(List<IceCandidate> candidates) {
+        for (IceCandidate candidate : candidates) {
+            peerConnection.addIceCandidate(candidate);
+        }
+    }
+});
+```
+
+Finally, pass the task instance to the `SaltyRTCBuilder` through the
+`.usingTasks(...)` method.
+
 ## Logging
 
 The library uses the slf4j logging API. Configure a logger (e.g. slf4j-simple)

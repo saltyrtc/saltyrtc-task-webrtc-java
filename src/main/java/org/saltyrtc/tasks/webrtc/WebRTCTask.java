@@ -78,15 +78,14 @@ public class WebRTCTask implements Task {
     final private PeerConnection pc;
 
     // Message handler
-    final private MessageHandler messageHandler;
+    private MessageHandler messageHandler = null;
 
     /**
      * Initialize WebRTC task with a WebRTC peer connection.
      * @param pc A `PeerConnection` instance.
      */
-    public WebRTCTask(@NonNull PeerConnection pc, @NonNull MessageHandler messageHandler) {
+    public WebRTCTask(@NonNull PeerConnection pc) {
         this.pc = pc;
-        this.messageHandler = messageHandler;
     }
 
     private Logger getLogger() {
@@ -146,6 +145,13 @@ public class WebRTCTask implements Task {
     }
 
 	/**
+     * Set the message handler. It will be notified on incoming messages.
+     */
+    public void setMessageHandler(@NonNull MessageHandler messageHandler) {
+        this.messageHandler = messageHandler;
+    }
+
+	/**
      * Handle incoming task messages, notify message handler.
      */
     @Override
@@ -155,16 +161,22 @@ public class WebRTCTask implements Task {
         try {
             switch (type) {
                 case "offer": {
-                    final Offer offer = new Offer(message.getData());
-                    this.messageHandler.onOffer(offer.toSessionDescription());
-                    } break;
+                    if (this.messageHandler != null) {
+                        final Offer offer = new Offer(message.getData());
+                        this.messageHandler.onOffer(offer.toSessionDescription());
+                    }
+                } break;
                 case "answer": {
-                    final Answer answer = new Answer(message.getData());
-                    this.messageHandler.onAnswer(answer.toSessionDescription());
+                    if (this.messageHandler != null) {
+                        final Answer answer = new Answer(message.getData());
+                        this.messageHandler.onAnswer(answer.toSessionDescription());
+                    }
                     } break;
                 case "candidate": {
-                    final Candidates candidates = new Candidates(message.getData());
-                    this.messageHandler.onCandidates(candidates.toIceCandidates());
+                    if (this.messageHandler != null) {
+                        final Candidates candidates = new Candidates(message.getData());
+                        this.messageHandler.onCandidates(candidates.toIceCandidates());
+                    }
                     } break;
                 default:
                     this.getLogger().error("Received message with unknown type: " + type);
