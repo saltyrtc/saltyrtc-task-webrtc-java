@@ -19,6 +19,7 @@ import org.saltyrtc.client.messages.c2c.TaskMessage;
 import org.saltyrtc.client.signaling.SignalingInterface;
 import org.saltyrtc.client.signaling.SignalingRole;
 import org.saltyrtc.client.tasks.Task;
+import org.saltyrtc.tasks.webrtc.events.MessageHandler;
 import org.saltyrtc.tasks.webrtc.exceptions.IllegalStateError;
 import org.saltyrtc.tasks.webrtc.messages.Answer;
 import org.saltyrtc.tasks.webrtc.messages.Candidates;
@@ -76,12 +77,16 @@ public class WebRTCTask implements Task {
     @NonNull
     final private PeerConnection pc;
 
+    // Message handler
+    final private MessageHandler messageHandler;
+
     /**
      * Initialize WebRTC task with a WebRTC peer connection.
      * @param pc A `PeerConnection` instance.
      */
-    public WebRTCTask(@NonNull PeerConnection pc) {
+    public WebRTCTask(@NonNull PeerConnection pc, @NonNull MessageHandler messageHandler) {
         this.pc = pc;
+        this.messageHandler = messageHandler;
     }
 
     private Logger getLogger() {
@@ -104,10 +109,9 @@ public class WebRTCTask implements Task {
 
     @Override
     public void onPeerHandshakeDone() {
-        this.getLogger().info("DONE");
-        if (this.signaling.getRole() == SignalingRole.Initiator) {
-            this.createAndSendOffer();
-        }
+        // Do nothing.
+        // The user should wait for a signaling state change to TASK.
+        // Then he can start by sending an offer.
     }
 
     /**
@@ -141,25 +145,33 @@ public class WebRTCTask implements Task {
         }
     }
 
+	/**
+     * Handle incoming task messages, notify message handler.
+     */
     @Override
     public void onTaskMessage(TaskMessage message) {
         this.getLogger().info("New task message arrived");
         final String type = message.getType();
-        switch (type) {
-            case "offer":
-                SessionDescription sd = this.validateOffer(message);
-                this.processOffer(sd);
-                break;
-            case "answer":
-                SessionDescription sd = this.validateAnswer(message);
-                this.processAnswer(sd);
-                break;
-            case "candidate":
-                List<IceCandidate> candidates = this.validateCandidates(message);
-                this.processCandidates(candidates);
-                break;
-            default:
-                this.getLogger().error("Received message with unknown type: " + type);
+        try {
+            switch (type) {
+                case "offer": {
+                    final Offer offer = new Offer(message.getData());
+                    this.messageHandler.onOffer(offer.toSessionDescription());
+                    } break;
+                case "answer": {
+                    final Answer answer = new Answer(message.getData());
+                    this.messageHandler.onAnswer(answer.toSessionDescription());
+                    } break;
+                case "candidate": {
+                    final Candidates candidates = new Candidates(message.getData());
+                    this.messageHandler.onCandidates(candidates.toIceCandidates());
+                    } break;
+                default:
+                    this.getLogger().error("Received message with unknown type: " + type);
+            }
+        } catch (ValidationError e) {
+            e.printStackTrace();
+            this.getLogger().warn("Validation failed for incoming message", e);
         }
     }
 
@@ -212,41 +224,6 @@ public class WebRTCTask implements Task {
     @NonNull
     public SignalingInterface getSignaling() {
         return this.signaling;
-    }
-
-    /**
-     * Create a WebRTC offer and send it to the responder.
-     *
-     * @throws IllegalStateError if the responder tries to send an offer.
-     */
-    private void createAndSendOffer() {
-        if (this.signaling.getRole() != SignalingRole.Initiator) {
-            throw new IllegalStateError("Only the initiator may send an offer");
-        }
-
-        this.getLogger().debug("Creating a WebRTC offer");
-        this.pc.createOffer(new SdpObserver() {
-            @Override
-            public void onCreateSuccess(SessionDescription sessionDescription) {
-                try {
-                    WebRTCTask.this.sendOffer(sessionDescription);
-                } catch (ProtocolException | SignalingException | ConnectionException e) {
-                    e.printStackTrace();
-                    WebRTCTask.this.getLogger().warn("Could not send offer", e);
-                }
-            }
-
-            @Override
-            public void onCreateFailure(String s) {
-                WebRTCTask.this.getLogger().warn("Could not create offer");
-            }
-
-            @Override
-            public void onSetSuccess() { }
-
-            @Override
-            public void onSetFailure(String s) { }
-        }, new MediaConstraints());
     }
 
     /**

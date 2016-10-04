@@ -33,9 +33,13 @@ public class Offer implements ToTaskMessage {
         this.sdp = sd.description;
     }
 
+	/**
+     * Construct an offer from the "data" field of a TaskMessage.
+     */
     public Offer(Map<String, Object> map) throws ValidationError {
-        ValidationHelper.validateType(map.get("type"), TYPE);
-        this.sdp = ValidationHelper.validateString(map.get("sdp"), "sdp");
+        final Map<String, Object> offer = ValidationHelper.validateStringObjectMap(map.get("offer"), "offer");
+        ValidationHelper.validateType(offer.get("type"), TYPE);
+        this.sdp = ValidationHelper.validateString(offer.get("sdp"), "sdp");
     }
 
     public String getSdp() {
@@ -44,9 +48,15 @@ public class Offer implements ToTaskMessage {
 
     @Override
     public TaskMessage toTaskMessage() {
+        final Map<String, Object> offer = new HashMap<>();
+        offer.put("type", TYPE);
+        offer.put("sdp", this.sdp);
         final Map<String, Object> data = new HashMap<>();
-        data.put("type", TYPE);
-        data.put("sdp", this.sdp);
+        data.put("offer", offer);
         return new TaskMessage(TYPE, data);
+    }
+
+    public SessionDescription toSessionDescription() {
+        return new SessionDescription(SessionDescription.Type.OFFER, this.getSdp());
     }
 }

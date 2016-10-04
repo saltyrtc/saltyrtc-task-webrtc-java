@@ -40,8 +40,10 @@ public class Candidates implements ToTaskMessage {
         }
     }
 
+    /**
+     * Construct candidates from the "data" field of a TaskMessage.
+     */
     public Candidates(Map<String, Object> map) throws ValidationError {
-        ValidationHelper.validateType(map.get("type"), TYPE);
         List<Map> candidates = ValidationHelper.validateTypedList(map.get("candidates"), Map.class, "candidates");
         this.candidates = new Candidate[candidates.size()];
         for (int i = 0; i < candidates.size(); i++) {
@@ -62,7 +64,6 @@ public class Candidates implements ToTaskMessage {
     @Override
     public TaskMessage toTaskMessage() {
         final Map<String, Object> data = new HashMap<>();
-        data.put("type", TYPE);
         final List<Map> candidateList = new ArrayList<>();
         for (Candidate candidate : this.candidates) {
             final Map<Object, Object> candidateMap = new HashMap<>();
@@ -73,5 +74,13 @@ public class Candidates implements ToTaskMessage {
         }
         data.put("candidates", candidateList);
         return new TaskMessage(TYPE, data);
+    }
+
+    public List<IceCandidate> toIceCandidates() {
+        final List<IceCandidate> candidates = new ArrayList<>();
+        for (Candidate c : this.candidates) {
+            candidates.add(new IceCandidate(c.getSdpMid(), c.getSdpMLineIndex(), c.getCandidate()));
+        }
+        return candidates;
     }
 }

@@ -41,7 +41,7 @@ public class SecureDataChannel {
     private static final Logger LOG = org.slf4j.LoggerFactory.getLogger("SaltyRTC.SecureDataChannel");
 
     // Chunking
-    private static final int CHUNK_SIZE = 16384;
+    private static final int CHUNK_SIZE = 16384; // TODO: Use value from negotiation
     private static final int CHUNK_COUNT_GC = 32;
     private static final int CHUNK_MAX_AGE = 60000;
     private final AtomicInteger messageNumber = new AtomicInteger(0);

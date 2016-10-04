@@ -33,9 +33,13 @@ public class Answer implements ToTaskMessage {
         this.sdp = sd.description;
     }
 
+    /**
+     * Construct an answer from the "data" field of a TaskMessage.
+     */
     public Answer(Map<String, Object> map) throws ValidationError {
-        ValidationHelper.validateType(map.get("type"), TYPE);
-        this.sdp = ValidationHelper.validateString(map.get("sdp"), "sdp");
+        final Map<String, Object> answer = ValidationHelper.validateStringObjectMap(map.get("answer"), "answer");
+        ValidationHelper.validateType(answer.get("type"), TYPE);
+        this.sdp = ValidationHelper.validateString(answer.get("sdp"), "sdp");
     }
 
     public String getSdp() {
@@ -44,9 +48,15 @@ public class Answer implements ToTaskMessage {
 
     @Override
     public TaskMessage toTaskMessage() {
+        final Map<String, Object> answer = new HashMap<>();
+        answer.put("type", TYPE);
+        answer.put("sdp", this.sdp);
         final Map<String, Object> data = new HashMap<>();
-        data.put("type", TYPE);
-        data.put("sdp", this.sdp);
+        data.put("answer", answer);
         return new TaskMessage(TYPE, data);
+    }
+
+    public SessionDescription toSessionDescription() {
+        return new SessionDescription(SessionDescription.Type.ANSWER, this.getSdp());
     }
 }
