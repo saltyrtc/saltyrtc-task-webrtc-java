@@ -159,7 +159,6 @@ class SecureDataChannel {
         if (this.observer != null) {
             this.observer.onMessage(decryptedBuffer);
         } else {
-            // TODO: Cache message?
             LOG.warn("Received new message, but no observer is configured.");
         }
     }
