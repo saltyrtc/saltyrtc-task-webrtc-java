@@ -57,6 +57,8 @@ class SecureDataChannel {
     @NonNull
     private final CombinedSequencePair csnPair;
     @Nullable
+    private Long lastIncomingCsn;
+    @Nullable
     private DataChannel.Observer observer;
 
     public SecureDataChannel(@NonNull DataChannel dc, @NonNull WebRTCTask task) {
@@ -208,10 +210,18 @@ class SecureDataChannel {
             throw new ValidationError("Remote cookie changed");
         }
 
+        // Make sure that two consecutive incoming messages do not have the exact same CSN
+        if (this.lastIncomingCsn != null && nonce.getCombinedSequence() == this.lastIncomingCsn) {
+            throw new ValidationError("CSN reuse detected!");
+        }
+
         // Validate data channel id
         if (nonce.getChannelId() != this.dc.id()) {
             throw new ValidationError("Data channel id in nonce does not match actual data channel id");
         }
+
+        // OK!
+        this.lastIncomingCsn = nonce.getCombinedSequence();
     }
 
     /**
