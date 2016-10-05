@@ -12,7 +12,6 @@ import org.saltyrtc.client.exceptions.ValidationError;
 import org.saltyrtc.client.helpers.ValidationHelper;
 import org.saltyrtc.client.messages.c2c.TaskMessage;
 import org.webrtc.IceCandidate;
-import org.webrtc.SessionDescription;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,9 +21,10 @@ import java.util.Map;
 public class Candidates implements ToTaskMessage {
 
     public static String TYPE = "candidates";
+    private static String FIELD_CANDIDATES = "candidates";
     private static String FIELD_CANDIDATE = "candidate";
-    private static String FIELD_SDP_MID = "sdp_mid";
-    private static String FIELD_SDP_M_LINE_INDEX = "sdp_m_line_index";
+    private static String FIELD_SDP_MID = "sdpMid";
+    private static String FIELD_SDP_M_LINE_INDEX = "sdpMLineIndex";
 
     private Candidate[] candidates;
 
@@ -44,18 +44,18 @@ public class Candidates implements ToTaskMessage {
      * Construct candidates from the "data" field of a TaskMessage.
      */
     public Candidates(Map<String, Object> map) throws ValidationError {
-        List<Map> candidates = ValidationHelper.validateTypedList(map.get("candidates"), Map.class, "candidates");
+        List<Map> candidates = ValidationHelper.validateTypedList(map.get(FIELD_CANDIDATES), Map.class, FIELD_CANDIDATES);
         this.candidates = new Candidate[candidates.size()];
         for (int i = 0; i < candidates.size(); i++) {
             final Map candidateMap = candidates.get(i);
-            final String sdp = ValidationHelper.validateString(candidateMap.get("candidate"), "candidate");
+            final String sdp = ValidationHelper.validateString(candidateMap.get(FIELD_CANDIDATE), FIELD_CANDIDATE);
             String sdpMid = null;
-            if (candidateMap.get("sdpMid") != null) {
-                sdpMid = ValidationHelper.validateString(candidateMap.get("sdpMid"), "sdpMid");
+            if (candidateMap.get(FIELD_SDP_MID) != null) {
+                sdpMid = ValidationHelper.validateString(candidateMap.get(FIELD_SDP_MID), FIELD_SDP_MID);
             }
             Integer sdpMLineIndex = null;
-            if (candidateMap.get("sdpMLineIndex") != null) {
-                sdpMLineIndex = ValidationHelper.validateInteger(candidateMap.get("sdpMLineIndex"), 0, 65535, "sdpMLineIndex");
+            if (candidateMap.get(FIELD_SDP_M_LINE_INDEX) != null) {
+                sdpMLineIndex = ValidationHelper.validateInteger(candidateMap.get(FIELD_SDP_M_LINE_INDEX), 0, 65535, FIELD_SDP_M_LINE_INDEX);
             }
             this.candidates[i] = new Candidate(sdp, sdpMid, sdpMLineIndex);
         }
@@ -76,7 +76,7 @@ public class Candidates implements ToTaskMessage {
             candidateMap.put(FIELD_SDP_M_LINE_INDEX, candidate.getSdpMLineIndex());
             candidateList.add(candidateMap);
         }
-        data.put("candidates", candidateList);
+        data.put(FIELD_CANDIDATES, candidateList);
         return new TaskMessage(TYPE, data);
     }
 
