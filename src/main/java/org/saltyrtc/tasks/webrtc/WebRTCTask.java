@@ -410,17 +410,12 @@ public class WebRTCTask implements Task {
         final Handover handover = new Handover();
         try {
             this.signaling.sendTaskMessage(handover.toTaskMessage());
-        } catch (ProtocolException e) {
+        } catch (ProtocolException | ConnectionException e) {
             e.printStackTrace();
             WebRTCTask.this.signaling.resetConnection(CloseCode.PROTOCOL_ERROR);
         } catch (SignalingException e) {
             e.printStackTrace();
             WebRTCTask.this.signaling.resetConnection(e.getCloseCode());
-        } catch (ConnectionException e) {
-            // Connection failed. Close with an internal error for now.
-            // TODO: Is this right?
-            e.printStackTrace();
-            WebRTCTask.this.signaling.resetConnection(CloseCode.INTERNAL_ERROR);
         }
 
         // Local handover finished
