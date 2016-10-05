@@ -52,7 +52,7 @@ public class Candidates implements ToTaskMessage {
             // TODO: Can this be null?
             final String sdpMid = ValidationHelper.validateString(candidateMap.get("sdpMid"), "sdpMid");
             // TODO: Can this be non-positive?
-            final Integer sdpMLineIndex = ValidationHelper.validateInteger(candidateMap.get("sdpMid"), 0, 65535, "sdpMid");
+            final Integer sdpMLineIndex = ValidationHelper.validateInteger(candidateMap.get("sdpMLineIndex"), 0, 65535, "sdpMLineIndex");
             this.candidates[i] = new Candidate(sdp, sdpMid, sdpMLineIndex);
         }
     }
