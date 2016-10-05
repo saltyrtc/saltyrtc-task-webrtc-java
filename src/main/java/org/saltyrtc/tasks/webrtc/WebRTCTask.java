@@ -439,16 +439,9 @@ public class WebRTCTask implements Task {
      *
      * @param dc The data channel to be wrapped.
      * @return A `SecureDataChannel` instance.
-     * @throws ConnectionException if handover hasn't taken place yet.
      */
-    public synchronized SecureDataChannel wrapDataChannel(DataChannel dc) throws ConnectionException {
+    public SecureDataChannel wrapDataChannel(DataChannel dc) {
         this.getLogger().debug("Wrapping data channel " + dc.id());
-
-        // Make sure handover has already taken place.
-        if (!this.signaling.getHandoverState().getAll()) {
-            throw new ConnectionException("Could not wrap data channel: Handover hasn't happened yet");
-        }
-
         return new SecureDataChannel(dc, this);
     }
 }
