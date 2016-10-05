@@ -99,14 +99,26 @@ class SecureDataChannel {
             public void onMessage(DataChannel.Buffer buffer) {
                 LOG.debug("Received chunk");
 
-                // Register the chunk. Once the message is complete, the original
-                // observer will be called in the `onMessage` method.
-                SecureDataChannel.this.unchunker.add(buffer.data);
+                // Determine negotiated chunk size
+                final Integer chunkSize = SecureDataChannel.this.task.getMaxPacketSize();
+                if (chunkSize == null) {
+                    LOG.error("Could not determine max chunk size");
+                    return;
+                }
 
-                // Clean up old chunks regularly
-                if (SecureDataChannel.this.chunkCount.getAndIncrement() > CHUNK_COUNT_GC) {
-                    SecureDataChannel.this.unchunker.gc(CHUNK_MAX_AGE);
-                    SecureDataChannel.this.chunkCount.set(0);
+                if (chunkSize == 0) {
+                    // No unchunking necessary
+                    SecureDataChannel.this.onMessage(buffer.data);
+                } else {
+                    // Register the chunk. Once the message is complete, the original
+                    // observer will be called in the `onMessage` method.
+                    SecureDataChannel.this.unchunker.add(buffer.data);
+
+                    // Clean up old chunks regularly
+                    if (SecureDataChannel.this.chunkCount.getAndIncrement() > CHUNK_COUNT_GC) {
+                        SecureDataChannel.this.unchunker.gc(CHUNK_MAX_AGE);
+                        SecureDataChannel.this.chunkCount.set(0);
+                    }
                 }
             }
         });
@@ -176,19 +188,26 @@ class SecureDataChannel {
         }
         final ByteBuffer encryptedBytes = ByteBuffer.wrap(box.toBytes());
 
-        // Chunkify
-        // TODO: Don't chunkify if chunk size is 0
-        final int msgId = this.messageNumber.getAndIncrement();
-        Chunker chunker = new Chunker(msgId, encryptedBytes, this.task.getMaxPacketSize());
+        // Chunkify if desired
+        final Integer chunkSize = this.task.getMaxPacketSize();
+        if (chunkSize == null) {
+            LOG.error("Could not determine max chunk size");
+            return false;
+        } else if (chunkSize == 0) {
+            return this.dc.send(new DataChannel.Buffer(encryptedBytes, true));
+        } else {
+            final int msgId = this.messageNumber.getAndIncrement();
+            Chunker chunker = new Chunker(msgId, encryptedBytes, chunkSize);
 
-        // Send chunks
-        while (chunker.hasNext()) {
-            final DataChannel.Buffer out = new DataChannel.Buffer(chunker.next(), true);
-            if (!this.dc.send(out)) {
-                return false;
+            // Send chunks
+            while (chunker.hasNext()) {
+                final DataChannel.Buffer out = new DataChannel.Buffer(chunker.next(), true);
+                if (!this.dc.send(out)) {
+                    return false;
+                }
             }
+            return true;
         }
-        return true;
     }
 
     /**
