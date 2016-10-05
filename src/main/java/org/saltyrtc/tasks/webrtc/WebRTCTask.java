@@ -16,21 +16,24 @@ import org.saltyrtc.client.exceptions.SignalingException;
 import org.saltyrtc.client.exceptions.ValidationError;
 import org.saltyrtc.client.helpers.ValidationHelper;
 import org.saltyrtc.client.messages.c2c.TaskMessage;
+import org.saltyrtc.client.signaling.CloseCode;
 import org.saltyrtc.client.signaling.SignalingInterface;
 import org.saltyrtc.client.signaling.SignalingRole;
+import org.saltyrtc.client.signaling.state.SignalingState;
 import org.saltyrtc.client.tasks.Task;
 import org.saltyrtc.tasks.webrtc.events.MessageHandler;
 import org.saltyrtc.tasks.webrtc.exceptions.IllegalStateError;
 import org.saltyrtc.tasks.webrtc.messages.Answer;
 import org.saltyrtc.tasks.webrtc.messages.Candidates;
+import org.saltyrtc.tasks.webrtc.messages.Handover;
 import org.saltyrtc.tasks.webrtc.messages.Offer;
 import org.slf4j.Logger;
+import org.webrtc.DataChannel;
 import org.webrtc.IceCandidate;
-import org.webrtc.MediaConstraints;
 import org.webrtc.PeerConnection;
-import org.webrtc.SdpObserver;
 import org.webrtc.SessionDescription;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -61,6 +64,9 @@ public class WebRTCTask implements Task {
     private static final String FIELD_EXCLUDE = "exclude";
     private static final String FIELD_MAX_PACKET_SIZE = "max_packet_size";
 
+    // Other constants
+    private static final String DC_LABEL = "saltyrtc-signaling";
+
     // Initialization state
     private boolean initialized = false;
 
@@ -76,6 +82,8 @@ public class WebRTCTask implements Task {
     // Peer connection
     @NonNull
     final private PeerConnection pc;
+    @Nullable
+    private DataChannel dc;
 
     // Message handler
     private MessageHandler messageHandler = null;
@@ -156,8 +164,8 @@ public class WebRTCTask implements Task {
      */
     @Override
     public void onTaskMessage(TaskMessage message) {
-        this.getLogger().info("New task message arrived");
         final String type = message.getType();
+        this.getLogger().info("New task message arrived: " + type);
         try {
             switch (type) {
                 case "offer": {
@@ -165,7 +173,7 @@ public class WebRTCTask implements Task {
                         final Offer offer = new Offer(message.getData());
                         this.messageHandler.onOffer(offer.toSessionDescription());
                     }
-                } break;
+                    } break;
                 case "answer": {
                     if (this.messageHandler != null) {
                         final Answer answer = new Answer(message.getData());
@@ -176,6 +184,15 @@ public class WebRTCTask implements Task {
                     if (this.messageHandler != null) {
                         final Candidates candidates = new Candidates(message.getData());
                         this.messageHandler.onCandidates(candidates.toIceCandidates());
+                    }
+                    } break;
+                case "handover": {
+                    if (!this.signaling.getHandoverState().getLocal()) {
+                        this.sendHandover();
+                    }
+                    this.signaling.getHandoverState().setPeer(true);
+                    if (this.signaling.getHandoverState().getAll()) {
+                        this.getLogger().info("Handover to data channel finished");
                     }
                     } break;
                 default:
@@ -191,8 +208,14 @@ public class WebRTCTask implements Task {
      * Send a signaling message *through the data channel*.
      */
     @Override
-    public void sendSignalingMessage(byte[] payload) {
-        this.getLogger().info("TODO: Send signaling message");
+    public void sendSignalingMessage(byte[] payload) throws ConnectionException {
+        if (this.signaling.getState() != SignalingState.OPEN) {
+            throw new ConnectionException("Could not send signaling message: Signaling state is not open.");
+        }
+        if (this.signaling.getHandoverState().getLocal()) {
+            throw new ConnectionException("Could not send signaling message: Handover hasn't happened yet");
+        }
+        this.dc.send(new DataChannel.Buffer(ByteBuffer.wrap(payload), true));
     }
 
     @NonNull
@@ -291,5 +314,83 @@ public class WebRTCTask implements Task {
      */
     public void sendCandidates(IceCandidate candidate) throws ProtocolException, SignalingException, ConnectionException {
         this.sendCandidates(new IceCandidate[] { candidate });
+    }
+
+	/**
+     * Do the handover from WebSocket to WebRTC data channel.
+     *
+     * This operation is asynchronous. To get notified when the handover is finished, subscribe to
+     * the `SignalingChannelChangedEvent`.
+     */
+    public void handover() {
+        // TODO (https://github.com/saltyrtc/saltyrtc-meta/issues/3): Negotiate channel id
+        this.getLogger().debug("Initiate handover");
+        DataChannel.Init init = new DataChannel.Init();
+        init.id = 0; // TODO: Use negotiated data channel id
+        init.negotiated = true;
+        init.ordered = true;
+        init.protocol = PROTOCOL_NAME;
+        this.dc = pc.createDataChannel(DC_LABEL, init);
+        this.dc.registerObserver(new DataChannel.Observer() {
+            @Override
+            public void onBufferedAmountChange(long l) {
+                WebRTCTask.this.getLogger().info("DataChannel: Buffered amount changed");
+            }
+
+            @Override
+            public void onStateChange() {
+                final Logger logger = WebRTCTask.this.getLogger();
+                final SignalingInterface signaling = WebRTCTask.this.signaling;
+                final DataChannel dc = WebRTCTask.this.dc;
+
+                logger.info("DataChannel: State changed to " + dc.state());
+                switch (dc.state()) {
+                    case CONNECTING:
+                        break;
+                    case OPEN:
+                        WebRTCTask.this.sendHandover();
+                        break;
+                    case CLOSING:
+                        if (signaling.getHandoverState().getAny()) {
+                            signaling.setState(SignalingState.CLOSING);
+                        }
+                        break;
+                    case CLOSED:
+                        if (signaling.getHandoverState().getAny()) {
+                            signaling.setState(SignalingState.CLOSED);
+                        }
+                        break;
+                    default:
+                        logger.warn("Unknown or invalid data channel state: " + dc.state());
+                }
+            }
+
+            @Override
+            public synchronized void onMessage(DataChannel.Buffer buffer) {
+            }
+        });
+    }
+
+    private synchronized void sendHandover() {
+        this.getLogger().debug("Sending handover");
+        final Handover handover = new Handover();
+        try {
+            this.signaling.sendTaskMessage(handover.toTaskMessage());
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+            WebRTCTask.this.signaling.resetConnection(CloseCode.PROTOCOL_ERROR);
+        } catch (SignalingException e) {
+            e.printStackTrace();
+            WebRTCTask.this.signaling.resetConnection(e.getCloseCode());
+        } catch (ConnectionException e) {
+            // Connection failed. Close with an internal error for now.
+            // TODO: Is this right?
+            e.printStackTrace();
+            WebRTCTask.this.signaling.resetConnection(CloseCode.INTERNAL_ERROR);
+        }
+        this.signaling.getHandoverState().setLocal(true);
+        if (this.signaling.getHandoverState().getAll()) {
+            this.getLogger().info("Handover to data channel finished");
+        }
     }
 }

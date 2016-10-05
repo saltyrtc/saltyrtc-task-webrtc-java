@@ -55,7 +55,7 @@ repositories {
 // In this section you declare the dependencies for your production and test code
 dependencies {
     // SaltyRTC
-    compile('com.github.saltyrtc:saltyrtc-client-java:6e4baf8') {
+    compile('com.github.saltyrtc:saltyrtc-client-java:d002fb4') {
         exclude group: 'org.json'
     }
 
