@@ -26,20 +26,12 @@ Then, register a message handler:
 task.setMessageHandler(new MessageHandler() {
     @Override
     public void onOffer(SessionDescription sd) {
-        peerConnection.setRemoteDescription(new SdpObserver() {
-            ...
-
-            @Override
-            public void onSetSuccess() {
-                final SessionDescription answer = ...; // Create answer
-                task.sendAnswer(answer);
-            }
-        }, sd);
+        // Handle offer
     }
 
     @Override
     public void onAnswer(SessionDescription sd) {
-        peerConnection.setRemoteDescription(new SdpObserver() { ... }, sd);
+        // Handle answer
     }
 
     @Override
@@ -53,6 +45,30 @@ task.setMessageHandler(new MessageHandler() {
 
 Finally, pass the task instance to the `SaltyRTCBuilder` through the
 `.usingTasks(...)` method.
+
+Once the signaling channel is open, create offer/answer/candidates as usual and
+send them through the signaling channel using the corresponding methods:
+
+- `task.sendOffer(offer)`
+- `task.sendAnswer(answer)`
+- `task.sendCandidates(candidates)`
+
+As soon as the data channel is open, request a handover of the signaling channel:
+
+```java
+dc.registerObserver(new DataChannel.Observer() {
+    // ...
+
+    @Override
+    public void onStateChange() {
+        if (dc.state() == DataChannel.State.OPEN) {
+            task.handover();
+        }
+    }
+});
+```
+
+To know when the handover is done, subscribe to the SaltyRTC `handover` event.
 
 ## Logging
 

@@ -320,7 +320,7 @@ public class WebRTCTask implements Task {
      * Do the handover from WebSocket to WebRTC data channel.
      *
      * This operation is asynchronous. To get notified when the handover is finished, subscribe to
-     * the `SignalingChannelChangedEvent`.
+     * the SaltyRTC `HandoverEvent`.
      */
     public void handover() {
         // TODO (https://github.com/saltyrtc/saltyrtc-meta/issues/3): Negotiate channel id
