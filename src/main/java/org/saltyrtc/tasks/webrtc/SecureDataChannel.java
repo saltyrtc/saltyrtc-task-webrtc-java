@@ -6,7 +6,7 @@
  * copied, modified, or distributed except according to those terms.
  */
 
-package org.saltyrtc.tasks.webrtc.datachannel;
+package org.saltyrtc.tasks.webrtc;
 
 import org.saltyrtc.chunkedDc.Chunker;
 import org.saltyrtc.chunkedDc.Unchunker;
@@ -19,7 +19,6 @@ import org.saltyrtc.client.exceptions.ValidationError;
 import org.saltyrtc.client.keystore.Box;
 import org.saltyrtc.client.nonce.CombinedSequence;
 import org.saltyrtc.client.nonce.CombinedSequencePair;
-import org.saltyrtc.tasks.webrtc.WebRTCTask;
 import org.saltyrtc.tasks.webrtc.nonce.DataChannelNonce;
 import org.slf4j.Logger;
 import org.webrtc.DataChannel;
@@ -35,7 +34,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Unfortunately, the `DataChannel` class does not provide an interface that we could implement.
  * https://bugs.chromium.org/p/webrtc/issues/detail?id=6221
  */
-public class SecureDataChannel {
+class SecureDataChannel {
 
     // Logger
     private static final Logger LOG = org.slf4j.LoggerFactory.getLogger("SaltyRTC.SecureDataChannel");
@@ -209,8 +208,10 @@ public class SecureDataChannel {
             throw new ValidationError("Remote cookie changed");
         }
 
-        // TODO: Ensure that the data channel id in the nonce matches the actual id
-        // Blocked by https://bugs.chromium.org/p/webrtc/issues/detail?id=6106
+        // Validate data channel id
+        if (nonce.getChannelId() != this.dc.id()) {
+            throw new ValidationError("Data channel id in nonce does not match actual data channel id");
+        }
     }
 
     /**
@@ -227,7 +228,7 @@ public class SecureDataChannel {
         // Create nonce
         final DataChannelNonce nonce = new DataChannelNonce(
             this.ownCookie.getBytes(),
-            123, // TODO: Get actual dc id (https://bugs.chromium.org/p/webrtc/issues/detail?id=6106)
+            this.dc.id(),
             csn.getOverflow(), csn.getSequenceNumber());
 
         // Encrypt

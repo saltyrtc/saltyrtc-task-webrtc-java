@@ -84,12 +84,15 @@ public class WebRTCTask implements Task {
 
     // Peer connection
     @NonNull
-    final private PeerConnection pc;
+    private final PeerConnection pc;
     @Nullable
     private DataChannel dc;
 
     // Message handler
     private MessageHandler messageHandler = null;
+
+    // Used data channel IDs
+    private final Set<Integer> usedDcIds = new HashSet<>();
 
     /**
      * Initialize WebRTC task with a WebRTC peer connection.
@@ -334,17 +337,33 @@ public class WebRTCTask implements Task {
      * This operation is asynchronous. To get notified when the handover is finished, subscribe to
      * the SaltyRTC `HandoverEvent`.
      */
-    public void handover() {
-        // TODO (https://github.com/saltyrtc/saltyrtc-meta/issues/3): Negotiate channel id
+    public synchronized void handover() {
         this.getLogger().debug("Initiate handover");
 
-        // Create new data channel
+        // Make sure handover hasn't already happened
+        if (this.signaling.getHandoverState().getAny()) {
+            this.getLogger().error("Handover already in process or finished!");
+            return;
+        }
+
+        // Configure new data channel
+        final DataChannel dc;
         DataChannel.Init init = new DataChannel.Init();
         init.id = this.dcId;
         init.negotiated = true;
         init.ordered = true;
         init.protocol = PROTOCOL_NAME;
-        final DataChannel dc = pc.createDataChannel(DC_LABEL, init);
+
+        // Make sure data channel IDs are not being reused
+        if (this.usedDcIds.contains(init.id)) {
+            // This should never happen, because wrapping is only allowed once the handover is done.
+            this.signaling.resetConnection(CloseCode.PROTOCOL_ERROR);
+            throw new RuntimeException("Negotiated data channel id has already been used");
+        }
+        this.usedDcIds.add(init.id);
+
+        // Create data channel
+        dc = pc.createDataChannel(DC_LABEL, init);
 
         // Handle data channel events
         dc.registerObserver(new DataChannel.Observer() {
@@ -411,5 +430,31 @@ public class WebRTCTask implements Task {
         if (this.signaling.getHandoverState().getAll()) {
             this.getLogger().info("Handover to data channel finished");
         }
+    }
+
+    /**
+     * Return a wrapped data channel.
+     *
+     * Only call this method *after* handover has taken place!
+     *
+     * @param dc The data channel to be wrapped.
+     * @return A `SecureDataChannel` instance.
+     * @throws ConnectionException if handover hasn't taken place yet.
+     * @throws IllegalArgumentException if the data channel id is already in use
+     */
+    public synchronized SecureDataChannel wrapDataChannel(DataChannel dc) throws ConnectionException {
+        this.getLogger().debug("Wrapping data channel " + dc.id());
+
+        // Make sure handover has already taken place.
+        if (!this.signaling.getHandoverState().getAll()) {
+            throw new ConnectionException("Could not wrap data channel: Handover hasn't happened yet");
+        }
+
+        // Make sure we're not reusing data channel IDs
+        if (this.usedDcIds.contains(dc.id())) {
+            throw new IllegalArgumentException("Negotiated data channel id has already been used");
+        }
+
+        return new SecureDataChannel(dc, this);
     }
 }
