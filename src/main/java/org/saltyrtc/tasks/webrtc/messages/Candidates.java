@@ -49,10 +49,14 @@ public class Candidates implements ToTaskMessage {
         for (int i = 0; i < candidates.size(); i++) {
             final Map candidateMap = candidates.get(i);
             final String sdp = ValidationHelper.validateString(candidateMap.get("candidate"), "candidate");
-            // TODO: Can this be null?
-            final String sdpMid = ValidationHelper.validateString(candidateMap.get("sdpMid"), "sdpMid");
-            // TODO: Can this be non-positive?
-            final Integer sdpMLineIndex = ValidationHelper.validateInteger(candidateMap.get("sdpMLineIndex"), 0, 65535, "sdpMLineIndex");
+            String sdpMid = null;
+            if (candidateMap.get("sdpMid") != null) {
+                sdpMid = ValidationHelper.validateString(candidateMap.get("sdpMid"), "sdpMid");
+            }
+            Integer sdpMLineIndex = null;
+            if (candidateMap.get("sdpMLineIndex") != null) {
+                sdpMLineIndex = ValidationHelper.validateInteger(candidateMap.get("sdpMLineIndex"), 0, 65535, "sdpMLineIndex");
+            }
             this.candidates[i] = new Candidate(sdp, sdpMid, sdpMLineIndex);
         }
     }
