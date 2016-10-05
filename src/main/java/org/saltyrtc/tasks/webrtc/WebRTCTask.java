@@ -71,7 +71,10 @@ public class WebRTCTask implements Task {
     private boolean initialized = false;
 
     // Exclude list
+    @NonNull
     private Set<Integer> exclude = new HashSet<>();
+    @Nullable
+    private Integer dcId = null;
 
     // Effective max packet size
     private Integer maxPacketSize;
@@ -132,6 +135,15 @@ public class WebRTCTask implements Task {
         }
         final List<Integer> ids = ValidationHelper.validateTypedList(value, Integer.class, FIELD_EXCLUDE);
         this.exclude.addAll(ids);
+        for (int i = 0; i <= 65535; i++) {
+            if (!this.exclude.contains(i)) {
+                this.dcId = i;
+                break;
+            }
+        }
+        if (this.dcId == null) {
+            throw new ValidationError("Exclude list too big, no free data channel id can be found");
+        }
     }
 
     /**
@@ -325,13 +337,17 @@ public class WebRTCTask implements Task {
     public void handover() {
         // TODO (https://github.com/saltyrtc/saltyrtc-meta/issues/3): Negotiate channel id
         this.getLogger().debug("Initiate handover");
+
+        // Create new data channel
         DataChannel.Init init = new DataChannel.Init();
-        init.id = 0; // TODO: Use negotiated data channel id
+        init.id = this.dcId;
         init.negotiated = true;
         init.ordered = true;
         init.protocol = PROTOCOL_NAME;
-        this.dc = pc.createDataChannel(DC_LABEL, init);
-        this.dc.registerObserver(new DataChannel.Observer() {
+        final DataChannel dc = pc.createDataChannel(DC_LABEL, init);
+
+        // Handle data channel events
+        dc.registerObserver(new DataChannel.Observer() {
             @Override
             public void onBufferedAmountChange(long l) {
                 WebRTCTask.this.getLogger().info("DataChannel: Buffered amount changed");
@@ -369,6 +385,9 @@ public class WebRTCTask implements Task {
             public synchronized void onMessage(DataChannel.Buffer buffer) {
             }
         });
+
+        // Set data channel as signaling channel
+        this.dc = dc;
     }
 
     private synchronized void sendHandover() {
