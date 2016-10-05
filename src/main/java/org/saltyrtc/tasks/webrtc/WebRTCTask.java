@@ -91,9 +91,6 @@ public class WebRTCTask implements Task {
     // Message handler
     private MessageHandler messageHandler = null;
 
-    // Used data channel IDs
-    private final Set<Integer> usedDcIds = new HashSet<>();
-
     /**
      * Initialize WebRTC task with a WebRTC peer connection.
      * @param pc A `PeerConnection` instance.
@@ -357,14 +354,6 @@ public class WebRTCTask implements Task {
         init.ordered = true;
         init.protocol = PROTOCOL_NAME;
 
-        // Make sure data channel IDs are not being reused
-        if (this.usedDcIds.contains(init.id)) {
-            // This should never happen, because wrapping is only allowed once the handover is done.
-            this.signaling.resetConnection(CloseCode.PROTOCOL_ERROR);
-            throw new RuntimeException("Negotiated data channel id has already been used");
-        }
-        this.usedDcIds.add(init.id);
-
         // Create data channel
         dc = pc.createDataChannel(DC_LABEL, init);
 
@@ -451,7 +440,6 @@ public class WebRTCTask implements Task {
      * @param dc The data channel to be wrapped.
      * @return A `SecureDataChannel` instance.
      * @throws ConnectionException if handover hasn't taken place yet.
-     * @throws IllegalArgumentException if the data channel id is already in use
      */
     public synchronized SecureDataChannel wrapDataChannel(DataChannel dc) throws ConnectionException {
         this.getLogger().debug("Wrapping data channel " + dc.id());
@@ -459,11 +447,6 @@ public class WebRTCTask implements Task {
         // Make sure handover has already taken place.
         if (!this.signaling.getHandoverState().getAll()) {
             throw new ConnectionException("Could not wrap data channel: Handover hasn't happened yet");
-        }
-
-        // Make sure we're not reusing data channel IDs
-        if (this.usedDcIds.contains(dc.id())) {
-            throw new IllegalArgumentException("Negotiated data channel id has already been used");
         }
 
         return new SecureDataChannel(dc, this);
