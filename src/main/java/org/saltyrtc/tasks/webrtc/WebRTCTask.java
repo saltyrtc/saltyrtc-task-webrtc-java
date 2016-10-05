@@ -86,7 +86,7 @@ public class WebRTCTask implements Task {
     @NonNull
     private final PeerConnection pc;
     @Nullable
-    private DataChannel dc;
+    private SecureDataChannel sdc;
 
     // Message handler
     private MessageHandler messageHandler = null;
@@ -221,6 +221,9 @@ public class WebRTCTask implements Task {
 
     /**
      * Send a signaling message *through the data channel*.
+     *
+     * @param payload Non-encrypted message. The message will be encrypted by the underlying secure
+     *                data channel.
      */
     @Override
     public void sendSignalingMessage(byte[] payload) throws ConnectionException {
@@ -230,7 +233,7 @@ public class WebRTCTask implements Task {
         if (this.signaling.getHandoverState().getLocal()) {
             throw new ConnectionException("Could not send signaling message: Handover hasn't happened yet");
         }
-        this.dc.send(new DataChannel.Buffer(ByteBuffer.wrap(payload), true));
+        this.sdc.send(new DataChannel.Buffer(ByteBuffer.wrap(payload), true));
     }
 
     @NonNull
@@ -365,8 +368,11 @@ public class WebRTCTask implements Task {
         // Create data channel
         dc = pc.createDataChannel(DC_LABEL, init);
 
+        // Wrap data channel
+        this.sdc = new SecureDataChannel(dc, this);
+
         // Handle data channel events
-        dc.registerObserver(new DataChannel.Observer() {
+        this.sdc.registerObserver(new DataChannel.Observer() {
             @Override
             public void onBufferedAmountChange(long l) {
                 WebRTCTask.this.getLogger().info("DataChannel: Buffered amount changed");
@@ -376,10 +382,10 @@ public class WebRTCTask implements Task {
             public void onStateChange() {
                 final Logger logger = WebRTCTask.this.getLogger();
                 final SignalingInterface signaling = WebRTCTask.this.signaling;
-                final DataChannel dc = WebRTCTask.this.dc;
+                final SecureDataChannel sdc = WebRTCTask.this.sdc;
 
-                logger.info("DataChannel: State changed to " + dc.state());
-                switch (dc.state()) {
+                logger.info("DataChannel: State changed to " + sdc.state());
+                switch (sdc.state()) {
                     case CONNECTING:
                         break;
                     case OPEN:
@@ -396,21 +402,22 @@ public class WebRTCTask implements Task {
                         }
                         break;
                     default:
-                        logger.warn("Unknown or invalid data channel state: " + dc.state());
+                        logger.warn("Unknown or invalid data channel state: " + sdc.state());
                 }
             }
 
             @Override
             public synchronized void onMessage(DataChannel.Buffer buffer) {
+                // Pass decrypted incoming signaling messages to signaling class
+                WebRTCTask.this.signaling.onSignalingPeerMessage(buffer.data.array());
             }
         });
-
-        // Set data channel as signaling channel
-        this.dc = dc;
     }
 
     private synchronized void sendHandover() {
         this.getLogger().debug("Sending handover");
+
+        // Send handover message
         final Handover handover = new Handover();
         try {
             this.signaling.sendTaskMessage(handover.toTaskMessage());
@@ -426,7 +433,11 @@ public class WebRTCTask implements Task {
             e.printStackTrace();
             WebRTCTask.this.signaling.resetConnection(CloseCode.INTERNAL_ERROR);
         }
+
+        // Local handover finished
         this.signaling.getHandoverState().setLocal(true);
+
+        // Check whether we're done
         if (this.signaling.getHandoverState().getAll()) {
             this.getLogger().info("Handover to data channel finished");
         }

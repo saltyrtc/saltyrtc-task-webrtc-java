@@ -239,6 +239,10 @@ class SecureDataChannel {
         return this.dc.label();
     }
 
+    public int id() {
+        return this.dc.id();
+    }
+
     public DataChannel.State state() {
         return this.dc.state();
     }
