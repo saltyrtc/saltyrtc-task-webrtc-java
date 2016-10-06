@@ -3,8 +3,9 @@
 [![Java Version](https://img.shields.io/badge/java-7%2B-orange.svg)](https://github.com/saltyrtc/saltyrtc-client-java)
 [![License](https://img.shields.io/badge/license-MIT%20%2F%20Apache%202.0-blue.svg)](https://github.com/saltyrtc/saltyrtc-client-java)
 
-This is a [SaltyRTC](https://github.com/saltyrtc/saltyrtc-meta) WebRTC task implementation
-for Java 7+.
+This is a [SaltyRTC](https://github.com/saltyrtc/saltyrtc-meta) [WebRTC
+task](https://github.com/saltyrtc/saltyrtc-meta/blob/master/Task-WebRTC.md)
+implementation for Java 7+.
 
 For now, as long as `RTCPeerConnection` only works on Android, this library
 will not work outside of projects.
