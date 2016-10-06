@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Unfortunately, the `DataChannel` class does not provide an interface that we could implement.
  * https://bugs.chromium.org/p/webrtc/issues/detail?id=6221
  */
-class SecureDataChannel {
+public class SecureDataChannel {
 
     // Logger
     private static final Logger LOG = org.slf4j.LoggerFactory.getLogger("SaltyRTC.SecureDataChannel");
