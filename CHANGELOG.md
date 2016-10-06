@@ -12,6 +12,10 @@ Possible log types:
 - `[security]` to invite users to upgrade in case of vulnerabilities.
 
 
+### v0.1.6 (2016-10-06)
+
+- [changed] Update saltyrtc-client to v0.3.0
+
 ### v0.1.5 (2016-10-06)
 
 - [changed] Update saltyrtc-client
