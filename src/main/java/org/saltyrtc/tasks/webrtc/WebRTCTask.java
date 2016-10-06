@@ -79,22 +79,12 @@ public class WebRTCTask implements Task {
     // Signaling
     private SignalingInterface signaling;
 
-    // Peer connection
-    @NonNull
-    private final PeerConnection pc;
+    // Data channel
     @Nullable
     private SecureDataChannel sdc;
 
     // Message handler
     private MessageHandler messageHandler = null;
-
-    /**
-     * Initialize WebRTC task with a WebRTC peer connection.
-     * @param pc A `PeerConnection` instance.
-     */
-    public WebRTCTask(@NonNull PeerConnection pc) {
-        this.pc = pc;
-    }
 
     private Logger getLogger() {
         String name;
@@ -333,12 +323,12 @@ public class WebRTCTask implements Task {
     }
 
 	/**
-     * Do the handover from WebSocket to WebRTC data channel.
+     * Do the handover from WebSocket to WebRTC data channel on the specified peer connection.
      *
      * This operation is asynchronous. To get notified when the handover is finished, subscribe to
      * the SaltyRTC `HandoverEvent`.
      */
-    public synchronized void handover() {
+    public synchronized void handover(@NonNull PeerConnection peerConnection) {
         this.getLogger().debug("Initiate handover");
 
         // Make sure handover hasn't already happened
@@ -356,7 +346,7 @@ public class WebRTCTask implements Task {
         init.protocol = PROTOCOL_NAME;
 
         // Create data channel
-        dc = pc.createDataChannel(DC_LABEL, init);
+        dc = peerConnection.createDataChannel(DC_LABEL, init);
 
         // Wrap data channel
         this.sdc = new SecureDataChannel(dc, this);

@@ -12,6 +12,10 @@ Possible log types:
 - `[security]` to invite users to upgrade in case of vulnerabilities.
 
 
+### v0.1.3 (2016-10-06)
+
+- [changed] The peer connection must now be passed to the `handover` method, not to the constructor.
+
 ### v0.1.2 (2016-10-06)
 
 - [changed] The sendXXX methods now only throw `ConnectionException`
