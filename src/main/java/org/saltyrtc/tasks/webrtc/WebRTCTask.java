@@ -11,18 +11,15 @@ package org.saltyrtc.tasks.webrtc;
 import org.saltyrtc.client.annotations.NonNull;
 import org.saltyrtc.client.annotations.Nullable;
 import org.saltyrtc.client.exceptions.ConnectionException;
-import org.saltyrtc.client.exceptions.ProtocolException;
 import org.saltyrtc.client.exceptions.SignalingException;
 import org.saltyrtc.client.exceptions.ValidationError;
 import org.saltyrtc.client.helpers.ValidationHelper;
 import org.saltyrtc.client.messages.c2c.TaskMessage;
 import org.saltyrtc.client.signaling.CloseCode;
 import org.saltyrtc.client.signaling.SignalingInterface;
-import org.saltyrtc.client.signaling.SignalingRole;
 import org.saltyrtc.client.signaling.state.SignalingState;
 import org.saltyrtc.client.tasks.Task;
 import org.saltyrtc.tasks.webrtc.events.MessageHandler;
-import org.saltyrtc.tasks.webrtc.exceptions.IllegalStateError;
 import org.saltyrtc.tasks.webrtc.messages.Answer;
 import org.saltyrtc.tasks.webrtc.messages.Candidates;
 import org.saltyrtc.tasks.webrtc.messages.Handover;
@@ -280,54 +277,58 @@ public class WebRTCTask implements Task {
      * Send an offer message to the responder.
      *
      * @throws IllegalArgumentException if the session description is not an offer.
-     * @throws IllegalStateError if the responder tries to send an offer.
      */
-    public void sendOffer(SessionDescription sd) throws ProtocolException, SignalingException, ConnectionException {
-        // Validate
-        if (this.signaling.getRole() != SignalingRole.Initiator) {
-            throw new IllegalStateError("Only the initiator may send an offer");
-        }
+    public void sendOffer(SessionDescription sd) throws ConnectionException {
         final Offer offer = new Offer(sd);
-
-        // Send message
         this.getLogger().debug("Sending offer");
-        this.signaling.sendTaskMessage(offer.toTaskMessage());
+        try {
+            this.signaling.sendTaskMessage(offer.toTaskMessage());
+        } catch (SignalingException e) {
+            getLogger().error("Signaling error: " + CloseCode.explain(e.getCloseCode()));
+            e.printStackTrace();
+            this.signaling.resetConnection(e.getCloseCode());
+        }
     }
 
     /**
      * Send an answer message to the initiator.
      *
      * @throws IllegalArgumentException if the session description is not an answer.
-     * @throws IllegalStateError if the initiator tries to send an answer.
      */
-    public void sendAnswer(SessionDescription sd) throws ProtocolException, SignalingException, ConnectionException {
-        // Validate
-        if (this.signaling.getRole() != SignalingRole.Responder) {
-            throw new IllegalStateError("Only the responder may send an answer");
-        }
+    public void sendAnswer(SessionDescription sd) throws ConnectionException {
         final Answer answer = new Answer(sd);
-
-        // Send message
         this.getLogger().debug("Sending answer");
-        this.signaling.sendTaskMessage(answer.toTaskMessage());
+        try {
+            this.signaling.sendTaskMessage(answer.toTaskMessage());
+        } catch (SignalingException e) {
+            getLogger().error("Signaling error: " + CloseCode.explain(e.getCloseCode()));
+            e.printStackTrace();
+            this.signaling.resetConnection(e.getCloseCode());
+        }
     }
 
     /**
      * Send one or more candidates to the peer.
      */
-    public void sendCandidates(IceCandidate[] iceCandidates) throws ProtocolException,  SignalingException, ConnectionException {
+    public void sendCandidates(IceCandidate[] iceCandidates) throws ConnectionException {
         // Validate
         final Candidates candidates = new Candidates(iceCandidates);
 
         // Send message
         this.getLogger().debug("Sending candidates");
-        this.signaling.sendTaskMessage(candidates.toTaskMessage());
+        try {
+            this.signaling.sendTaskMessage(candidates.toTaskMessage());
+        } catch (SignalingException e) {
+            getLogger().error("Signaling error: " + CloseCode.explain(e.getCloseCode()));
+            e.printStackTrace();
+            this.signaling.resetConnection(e.getCloseCode());
+        }
     }
 
     /**
      * Send one or more candidates to the peer.
      */
-    public void sendCandidates(IceCandidate candidate) throws ProtocolException, SignalingException, ConnectionException {
+    public void sendCandidates(IceCandidate candidate) throws ConnectionException {
         this.sendCandidates(new IceCandidate[] { candidate });
     }
 
@@ -410,7 +411,7 @@ public class WebRTCTask implements Task {
         final Handover handover = new Handover();
         try {
             this.signaling.sendTaskMessage(handover.toTaskMessage());
-        } catch (ProtocolException | ConnectionException e) {
+        } catch (ConnectionException e) {
             e.printStackTrace();
             WebRTCTask.this.signaling.resetConnection(CloseCode.PROTOCOL_ERROR);
         } catch (SignalingException e) {

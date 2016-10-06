@@ -16,7 +16,7 @@ plugins {
 apply plugin: 'witness'
 apply plugin: 'com.android.library'
 group = 'org.saltyrtc.tasks.webrtc'
-version = '0.1.1'
+version = '0.1.2'
 
 // Android configuration
 android {
@@ -55,7 +55,7 @@ repositories {
 // In this section you declare the dependencies for your production and test code
 dependencies {
     // SaltyRTC
-    compile('com.github.saltyrtc:saltyrtc-client-java:08ebfd4') {
+    compile('com.github.saltyrtc:saltyrtc-client-java:a61e6af') {
         exclude group: 'org.json'
     }
 
@@ -125,10 +125,10 @@ bintray {
         licenses = ['MIT', 'Apache-2.0']
         labels = ['saltyrtc', 'webrtc', 'data channels', 'signaling', 'secure']
         version {
-            name = '0.1.1'
-            desc = 'SaltyRTC WebRTC Task v0.1.1'
+            name = '0.1.2'
+            desc = 'SaltyRTC WebRTC Task v0.1.2'
             released = new Date()
-            vcsTag = 'v0.1.1'
+            vcsTag = 'v0.1.2'
         }
     }
 }
