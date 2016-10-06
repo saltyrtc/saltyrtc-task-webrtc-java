@@ -4,19 +4,20 @@ buildscript {
     }
     dependencies {
         classpath files('libs/gradle-witness.jar')
-        classpath 'com.android.tools.build:gradle:2.1.2'
+        classpath 'com.android.tools.build:gradle:2.2.0'
     }
 }
 
 plugins {
-    // Publishing on bintray
-    id 'maven'
-    id 'maven-publish'
+    id 'com.github.dcendents.android-maven' version '1.5'
     id 'com.jfrog.bintray' version '1.7'
 }
 
 apply plugin: 'witness'
 apply plugin: 'com.android.library'
+
+group = 'org.saltyrtc.tasks.webrtc'
+version = '0.1.0'
 
 // Android configuration
 android {
