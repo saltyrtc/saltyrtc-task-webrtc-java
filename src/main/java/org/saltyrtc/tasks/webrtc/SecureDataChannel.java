@@ -284,7 +284,6 @@ public class SecureDataChannel {
     }
 
     public void close() {
-        // TODO: Send close msg?
         this.dc.close();
     }
 

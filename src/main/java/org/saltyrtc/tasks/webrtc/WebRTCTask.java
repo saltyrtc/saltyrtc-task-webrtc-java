@@ -14,6 +14,7 @@ import org.saltyrtc.client.exceptions.ConnectionException;
 import org.saltyrtc.client.exceptions.SignalingException;
 import org.saltyrtc.client.exceptions.ValidationError;
 import org.saltyrtc.client.helpers.ValidationHelper;
+import org.saltyrtc.client.messages.c2c.Close;
 import org.saltyrtc.client.messages.c2c.TaskMessage;
 import org.saltyrtc.client.signaling.CloseCode;
 import org.saltyrtc.client.signaling.SignalingInterface;
@@ -211,7 +212,7 @@ public class WebRTCTask implements Task {
      */
     @Override
     public void sendSignalingMessage(byte[] payload) throws ConnectionException {
-        if (this.signaling.getState() != SignalingState.OPEN) {
+        if (this.signaling.getState() != SignalingState.TASK) {
             throw new ConnectionException("Could not send signaling message: Signaling state is not open.");
         }
         if (this.signaling.getHandoverState().getLocal()) {
@@ -234,7 +235,6 @@ public class WebRTCTask implements Task {
         types.add("answer");
         types.add("candidate");
         types.add("handover");
-        types.add("close"); // TODO: Hmm... This conflicts with the signaling types.
         return types;
     }
 
@@ -429,5 +429,24 @@ public class WebRTCTask implements Task {
     public SecureDataChannel wrapDataChannel(DataChannel dc) {
         this.getLogger().debug("Wrapping data channel " + dc.id());
         return new SecureDataChannel(dc, this);
+    }
+
+	/**
+	 * Send a 'close' message to the peer and close the connection.
+     */
+    public void sendClose() {
+        this.close(CloseCode.GOING_AWAY);
+        this.signaling.resetConnection(CloseCode.GOING_AWAY);
+    }
+
+	/**
+     * Close the data channel.
+     *
+     * @param reason The close code.
+     */
+    @Override
+    public void close(int reason) {
+        this.getLogger().debug("Closing signaling data channel: " + CloseCode.explain(reason));
+        this.sdc.close();
     }
 }

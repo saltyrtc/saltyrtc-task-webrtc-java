@@ -240,7 +240,7 @@ public class ConnectionTest {
         initiator.events.signalingStateChanged.register(new EventHandler<SignalingStateChangedEvent>() {
             @Override
             public boolean handle(SignalingStateChangedEvent event) {
-                if (event.getState() == SignalingState.OPEN) {
+                if (event.getState() == SignalingState.TASK) {
                     connectedPeers.countDown();
                 }
                 return false;
@@ -249,7 +249,7 @@ public class ConnectionTest {
         responder.events.signalingStateChanged.register(new EventHandler<SignalingStateChangedEvent>() {
             @Override
             public boolean handle(SignalingStateChangedEvent event) {
-                if (event.getState() == SignalingState.OPEN) {
+                if (event.getState() == SignalingState.TASK) {
                     connectedPeers.countDown();
                 }
                 return false;
