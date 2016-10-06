@@ -15,7 +15,6 @@ plugins {
 
 apply plugin: 'witness'
 apply plugin: 'com.android.library'
-
 group = 'org.saltyrtc.tasks.webrtc'
 version = '0.1.0'
 
@@ -89,4 +88,47 @@ dependencyVerification {
             'com.fasterxml.jackson.core:jackson-core:526ab629da103bf2c93e72bd541d7c34e498182460c56d5f48b03dbac91b1df9',
             'org.saltyrtc.chunked-dc:chunked-dc:e32ae9c0df9b2b3e5b3d2c8699c966b1d0fad89f76d2cab4be60268567415631',
     ]
+}
+
+task androidJavadocs(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
+    classifier = 'javadoc'
+    from androidJavadocs.destinationDir
+}
+task androidSourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.srcDirs
+}
+
+artifacts {
+    archives androidSourcesJar
+    archives androidJavadocsJar
+}
+
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_KEY')
+    configurations = ['archives']
+    pkg {
+        repo = 'maven'
+        name = 'saltyrtc-task-webrtc'
+        userOrg = 'saltyrtc'
+        desc = 'WebRTC Task for SaltyRTC.'
+        websiteUrl = 'http://saltyrtc.org/'
+        issueTrackerUrl = 'https://github.com/saltyrtc/saltyrtc-task-webrtc-java/issues'
+        vcsUrl = 'https://github.com/saltyrtc/saltyrtc-task-webrtc-java.git'
+        githubRepo = 'saltyrtc/saltyrtc-task-webrtc-java'
+        publicDownloadNumbers = true
+        licenses = ['MIT', 'Apache-2.0']
+        labels = ['saltyrtc', 'webrtc', 'data channels', 'signaling', 'secure']
+        version {
+            name = '0.1.0'
+            desc = 'SaltyRTC WebRTC Task v0.1.0'
+            released = new Date()
+            vcsTag = 'v0.1.0'
+        }
+    }
 }
