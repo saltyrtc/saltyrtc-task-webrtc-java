@@ -115,8 +115,8 @@ public class ConnectionTest {
         final SSLContext sslContext = SSLContextHelper.getSSLContext();
 
         // Initialize tasks
-        this.initiatorTask = new WebRTCTask(this.createPeerConnection());
-        this.responderTask = new WebRTCTask(this.createPeerConnection());
+        this.initiatorTask = new WebRTCTask();
+        this.responderTask = new WebRTCTask();
 
         // Create SaltyRTC instances for initiator and responder
         this.initiator = new SaltyRTCBuilder()
