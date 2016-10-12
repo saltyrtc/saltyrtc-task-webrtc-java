@@ -43,7 +43,7 @@ import java.util.Set;
  * WebRTC Task.
  *
  * This task uses the end-to-end encryption techniques of SaltyRTC to set up a secure WebRTC
- * peer-to-peer connection. It also adds another security layer for data channels that are available
+ * peer-to-peer connection. It also adds another security layer for data channels that is available
  * to users. The signalling channel will persist after being handed over to a dedicated data channel
  * once the peer-to-peer connection has been set up. Therefore, further signalling communication
  * between the peers does not require a dedicated WebSocket connection over a SaltyRTC server.
@@ -138,8 +138,7 @@ public class WebRTCTask implements Task {
      * The max_packet_size field MUST contain either 0 or a positive integer. If one client's value
      * is 0 but the other client's value is greater than 0, the larger of the two values SHALL be
      * stored to be used for data channel communication. Otherwise, the minimum of both clients'
-     * maximum size SHALL be stored. The stored value SHALL be readable by user applications, so a
-     * user application can have its own message chunking implementation if desired.
+     * maximum size SHALL be stored.
      */
     private void processMaxPacketSize(Object value) throws ValidationError {
         final Integer maxPacketSize = ValidationHelper.validateInteger(value, 0, Integer.MAX_VALUE, FIELD_MAX_PACKET_SIZE);
@@ -180,7 +179,7 @@ public class WebRTCTask implements Task {
                         this.messageHandler.onAnswer(answer.toSessionDescription());
                     }
                     } break;
-                case "candidate": {
+                case "candidates": {
                     if (this.messageHandler != null) {
                         final Candidates candidates = new Candidates(message.getData());
                         this.messageHandler.onCandidates(candidates.toIceCandidates());
@@ -233,7 +232,7 @@ public class WebRTCTask implements Task {
         final List<String> types = new ArrayList<>();
         types.add("offer");
         types.add("answer");
-        types.add("candidate");
+        types.add("candidates");
         types.add("handover");
         return types;
     }
