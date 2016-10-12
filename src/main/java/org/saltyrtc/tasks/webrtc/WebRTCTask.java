@@ -253,7 +253,7 @@ public class WebRTCTask implements Task {
     public Map<Object, Object> getData() {
         final Map<Object, Object> map = new HashMap<>();
         map.put(WebRTCTask.FIELD_EXCLUDE, this.exclude);
-        map.put(WebRTCTask.FIELD_MAX_PACKET_SIZE, WebRTCTask.MAX_PACKET_SIZE);
+        map.put(WebRTCTask.FIELD_MAX_PACKET_SIZE, this.maxPacketSize);
         return map;
     }
 
