@@ -14,7 +14,6 @@ import org.saltyrtc.client.exceptions.ConnectionException;
 import org.saltyrtc.client.exceptions.SignalingException;
 import org.saltyrtc.client.exceptions.ValidationError;
 import org.saltyrtc.client.helpers.ValidationHelper;
-import org.saltyrtc.client.messages.c2c.Close;
 import org.saltyrtc.client.messages.c2c.TaskMessage;
 import org.saltyrtc.client.signaling.CloseCode;
 import org.saltyrtc.client.signaling.SignalingInterface;
@@ -253,7 +252,7 @@ public class WebRTCTask implements Task {
     public Map<Object, Object> getData() {
         final Map<Object, Object> map = new HashMap<>();
         map.put(WebRTCTask.FIELD_EXCLUDE, this.exclude);
-        map.put(WebRTCTask.FIELD_MAX_PACKET_SIZE, this.maxPacketSize);
+        map.put(WebRTCTask.FIELD_MAX_PACKET_SIZE, MAX_PACKET_SIZE);
         return map;
     }
 
