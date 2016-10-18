@@ -55,7 +55,7 @@ repositories {
 // In this section you declare the dependencies for your production and test code
 dependencies {
     // SaltyRTC
-    compile('org.saltyrtc.client:saltyrtc-client:0.3.0') { exclude group: 'org.json' }
+    compile('org.saltyrtc.client:saltyrtc-client:0.4.0') { exclude group: 'org.json' }
 
     // The production code uses the SLF4J logging API at compile time
     compile 'org.slf4j:slf4j-api:1.7.21'
@@ -85,6 +85,7 @@ dependencyVerification {
             'com.fasterxml.jackson.core:jackson-annotations:f775d20b6ad1ef122f453b2d7aeebb009523f7cdf89a674fe2f303221c95696b',
             'com.fasterxml.jackson.core:jackson-core:526ab629da103bf2c93e72bd541d7c34e498182460c56d5f48b03dbac91b1df9',
             'org.saltyrtc.chunked-dc:chunked-dc:e32ae9c0df9b2b3e5b3d2c8699c966b1d0fad89f76d2cab4be60268567415631',
+            'org.saltyrtc.client:saltyrtc-client:d8e43da0571ef64efc88d0f8ddd5a6230d86799db599b79a281a45097e10a17b',
     ]
 }
 

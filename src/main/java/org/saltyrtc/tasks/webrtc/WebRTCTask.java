@@ -209,12 +209,14 @@ public class WebRTCTask implements Task {
      *                data channel.
      */
     @Override
-    public void sendSignalingMessage(byte[] payload) throws ConnectionException {
+    public void sendSignalingMessage(byte[] payload) throws SignalingException {
         if (this.signaling.getState() != SignalingState.TASK) {
-            throw new ConnectionException("Could not send signaling message: Signaling state is not open.");
+            throw new SignalingException(CloseCode.PROTOCOL_ERROR,
+                "Could not send signaling message: Signaling state is not open.");
         }
         if (this.signaling.getHandoverState().getLocal()) {
-            throw new ConnectionException("Could not send signaling message: Handover hasn't happened yet");
+            throw new SignalingException(CloseCode.PROTOCOL_ERROR,
+                "Could not send signaling message: Handover hasn't happened yet");
         }
         this.sdc.send(new DataChannel.Buffer(ByteBuffer.wrap(payload), true));
     }
