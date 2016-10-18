@@ -214,7 +214,7 @@ public class WebRTCTask implements Task {
             throw new SignalingException(CloseCode.PROTOCOL_ERROR,
                 "Could not send signaling message: Signaling state is not open.");
         }
-        if (this.signaling.getHandoverState().getLocal()) {
+        if (!this.signaling.getHandoverState().getLocal()) {
             throw new SignalingException(CloseCode.PROTOCOL_ERROR,
                 "Could not send signaling message: Handover hasn't happened yet");
         }
