@@ -17,12 +17,12 @@ and should not be used for production yet.
 ## Installing
 
 The package is available [on Bintray](https://bintray.com/saltyrtc/maven/saltyrtc-client/).
-It includes the WebRTC PeerConnection build for the `arm` and `x86` architectures.
+It includes the WebRTC PeerConnection build for the `armeabi-v7a` and `x86` architectures.
 
 Gradle:
 
 ```groovy
-compile 'org.saltyrtc.tasks.webrtc:saltyrtc-task-webrtc:0.1.7'
+compile 'org.saltyrtc.tasks.webrtc:saltyrtc-task-webrtc:0.1.8'
 ```
 
 Maven:
@@ -31,7 +31,7 @@ Maven:
 <dependency>
   <groupId>org.saltyrtc.tasks.webrtc</groupId>
   <artifactId>saltyrtc-task-webrtc</artifactId>
-  <version>0.1.7</version>
+  <version>0.1.8</version>
   <type>pom</type>
 </dependency>
 ```

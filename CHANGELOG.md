@@ -12,6 +12,10 @@ Possible log types:
 - `[security]` to invite users to upgrade in case of vulnerabilities.
 
 
+### v0.1.8 (2016-10-19)
+
+- [fixed] Fix path to arm native libraries
+
 ### v0.1.7 (2016-10-19)
 
 - [changed] Update saltyrtc-client to v0.4.0
