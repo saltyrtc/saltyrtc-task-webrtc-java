@@ -16,7 +16,7 @@ plugins {
 apply plugin: 'witness'
 apply plugin: 'com.android.library'
 group = 'org.saltyrtc.tasks.webrtc'
-version = '0.1.8'
+version = '0.1.9'
 
 // Android configuration
 android {
@@ -124,10 +124,10 @@ bintray {
         licenses = ['MIT', 'Apache-2.0']
         labels = ['saltyrtc', 'webrtc', 'data channels', 'signaling', 'secure']
         version {
-            name = '0.1.8'
-            desc = 'SaltyRTC WebRTC Task v0.1.8'
+            name = '0.1.9'
+            desc = 'SaltyRTC WebRTC Task v0.1.9'
             released = new Date()
-            vcsTag = 'v0.1.8'
+            vcsTag = 'v0.1.9'
         }
     }
 }
