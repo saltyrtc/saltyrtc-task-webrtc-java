@@ -12,6 +12,15 @@ Possible log types:
 - `[security]` to invite users to upgrade in case of vulnerabilities.
 
 
+### v0.1.7 (2016-10-19)
+
+- [changed] Update saltyrtc-client to v0.4.0
+- [fixed] Fix candidates message handling
+- [fixed] Fix bug in task data
+- [fixed] Send proper max packet size
+- [fixed] Fix boolean check in sendSignalingMessage
+- [added] Added WebRTC PeerConnection builds for `arm` and `x86`
+
 ### v0.1.6 (2016-10-06)
 
 - [changed] Update saltyrtc-client to v0.3.0
