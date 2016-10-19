@@ -13,6 +13,30 @@ will not work outside of projects.
 The development is still ongoing, the current version is only at alpha-level
 and should not be used for production yet.
 
+
+## Installing
+
+The package is available [on Bintray](https://bintray.com/saltyrtc/maven/saltyrtc-client/).
+It includes the WebRTC PeerConnection build for the `arm` and `x86` architectures.
+
+Gradle:
+
+```groovy
+compile 'org.saltyrtc.tasks.webrtc:saltyrtc-task-webrtc:0.1.6'
+```
+
+Maven:
+
+```xml
+<dependency>
+  <groupId>org.saltyrtc.tasks.webrtc</groupId>
+  <artifactId>saltyrtc-task-webrtc</artifactId>
+  <version>0.1.6</version>
+  <type>pom</type>
+</dependency>
+```
+
+
 ## Usage
 
 Instantiate the task with the peer connection.
@@ -71,15 +95,18 @@ dc.registerObserver(new DataChannel.Observer() {
 
 To know when the handover is done, subscribe to the SaltyRTC `handover` event.
 
+
 ## Logging
 
 The library uses the slf4j logging API. Configure a logger (e.g. slf4j-simple)
 to see the log output.
 
+
 ## Dependency Verification
 
 This project uses [gradle-witness](https://github.com/WhisperSystems/gradle-witness)
 to make sure that you always get the exact same versions of your dependencies.
+
 
 ## Publishing
 
@@ -89,9 +116,10 @@ To publish this library to Bintray:
     export BINTRAY_KEY=...
     ./gradlew build bintrayUpload
 
+
 ## License
 
-    Copyright (c) 2016 Threema GmbH / SaltyRTC Contributors
+    Copyright (c) 2016 Threema GmbH
 
     Licensed under the Apache License, Version 2.0, <see LICENSE-APACHE file>
     or the MIT license <see LICENSE-MIT file>, at your option. This file may not be
