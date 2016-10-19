@@ -110,11 +110,26 @@ to make sure that you always get the exact same versions of your dependencies.
 
 ## Publishing
 
-To publish this library to Bintray:
+Set variables:
 
+    export VERSION=X.Y.Z
+    export GPG_KEY=E7ADD9914E260E8B35DFB50665FDE935573ACDA6
     export BINTRAY_USER=...
     export BINTRAY_KEY=...
+
+Update version numbers:
+
+    vim -p build.gradle README.md CHANGELOG.md
+
+Publish the library to Bintray:
+
     ./gradlew build bintrayUpload
+
+Commit, tag, push:
+
+    git commit -m "Release v${VERSION}"
+    git tag -s -u ${GPG_KEY} v${VERSION} -m "Version ${VERSION}"
+    git push && git push --tags
 
 
 ## License
