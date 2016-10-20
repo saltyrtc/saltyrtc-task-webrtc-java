@@ -12,13 +12,17 @@ Possible log types:
 - `[security]` to invite users to upgrade in case of vulnerabilities.
 
 
+### v0.2.1 (2016-10-20)
+
+- [fixed] Update libjingle builds
+
 ### v0.2.0 (2016-10-20)
 
 - [changed] Update saltyrtc-client to v0.5.0
 
 ### v0.1.9 (2016-10-19)
 
-- [fixed] Downgrade PeerConnection builds
+- [fixed] Downgrade libjingle builds
 
 ### v0.1.8 (2016-10-19)
 
@@ -31,7 +35,7 @@ Possible log types:
 - [fixed] Fix bug in task data
 - [fixed] Send proper max packet size
 - [fixed] Fix boolean check in sendSignalingMessage
-- [added] Added WebRTC PeerConnection builds for `arm` and `x86`
+- [added] Added WebRTC PeerConnection (libjingle) builds for `arm` and `x86`
 
 ### v0.1.6 (2016-10-06)
 
