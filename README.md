@@ -22,7 +22,7 @@ It includes the WebRTC PeerConnection build for the `armeabi-v7a` and `x86` arch
 Gradle:
 
 ```groovy
-compile 'org.saltyrtc.tasks.webrtc:saltyrtc-task-webrtc:0.1.9'
+compile 'org.saltyrtc.tasks.webrtc:saltyrtc-task-webrtc:0.2.0'
 ```
 
 Maven:
@@ -31,7 +31,7 @@ Maven:
 <dependency>
   <groupId>org.saltyrtc.tasks.webrtc</groupId>
   <artifactId>saltyrtc-task-webrtc</artifactId>
-  <version>0.1.9</version>
+  <version>0.2.0</version>
   <type>pom</type>
 </dependency>
 ```
@@ -121,13 +121,16 @@ Update version numbers:
 
     vim -p build.gradle README.md CHANGELOG.md
 
+Add and commit:
+
+    git commit -m "Release v${VERSION}"
+
 Publish the library to Bintray:
 
     ./gradlew build bintrayUpload
 
-Commit, tag, push:
+Tag and push:
 
-    git commit -m "Release v${VERSION}"
     git tag -s -u ${GPG_KEY} v${VERSION} -m "Version ${VERSION}"
     git push && git push --tags
 
