@@ -19,6 +19,7 @@ import org.saltyrtc.client.exceptions.ValidationError;
 import org.saltyrtc.client.keystore.Box;
 import org.saltyrtc.client.nonce.CombinedSequence;
 import org.saltyrtc.client.nonce.CombinedSequencePair;
+import org.saltyrtc.client.nonce.CombinedSequenceSnapshot;
 import org.saltyrtc.tasks.webrtc.nonce.DataChannelNonce;
 import org.slf4j.Logger;
 import org.webrtc.DataChannel;
@@ -251,7 +252,7 @@ public class SecureDataChannel {
     @Nullable
     private Box encryptData(@NonNull byte[] data) throws CryptoFailedException, OverflowException {
         // Get next CSN
-        final CombinedSequence csn = this.csnPair.getOurs().next();
+        final CombinedSequenceSnapshot csn = this.csnPair.getOurs().next();
 
         // Create nonce
         final DataChannelNonce nonce = new DataChannelNonce(
