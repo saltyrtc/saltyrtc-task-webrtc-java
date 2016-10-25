@@ -12,6 +12,10 @@ Possible log types:
 - `[security]` to invite users to upgrade in case of vulnerabilities.
 
 
+### v0.2.2 (2016-10-25)
+
+- [changed] Add latest libjingle build
+
 ### v0.2.1 (2016-10-20)
 
 - [fixed] Update libjingle builds
