@@ -16,7 +16,7 @@ plugins {
 apply plugin: 'witness'
 apply plugin: 'com.android.library'
 group = 'org.saltyrtc.tasks.webrtc'
-version = '0.2.2'
+version = '0.3.0'
 
 // Android configuration
 android {
@@ -55,7 +55,7 @@ repositories {
 // In this section you declare the dependencies for your production and test code
 dependencies {
     // SaltyRTC
-    compile('org.saltyrtc.client:saltyrtc-client:0.5.0') { exclude group: 'org.json' }
+    compile('org.saltyrtc.client:saltyrtc-client:0.6.+') { exclude group: 'org.json' }
 
     // The production code uses the SLF4J logging API at compile time
     compile 'org.slf4j:slf4j-api:1.7.21'
@@ -86,7 +86,6 @@ dependencyVerification {
             'com.fasterxml.jackson.core:jackson-annotations:f775d20b6ad1ef122f453b2d7aeebb009523f7cdf89a674fe2f303221c95696b',
             'com.fasterxml.jackson.core:jackson-core:526ab629da103bf2c93e72bd541d7c34e498182460c56d5f48b03dbac91b1df9',
             'org.saltyrtc.chunked-dc:chunked-dc:e32ae9c0df9b2b3e5b3d2c8699c966b1d0fad89f76d2cab4be60268567415631',
-            'org.saltyrtc.client:saltyrtc-client:8fd378a7f2ee010dee8e71aff12a398d6c44764394f56ae22ed2511a09ecb182',
     ]
 }
 
@@ -125,10 +124,10 @@ bintray {
         licenses = ['MIT', 'Apache-2.0']
         labels = ['saltyrtc', 'webrtc', 'data channels', 'signaling', 'secure']
         version {
-            name = '0.2.2'
-            desc = 'SaltyRTC WebRTC Task v0.2.2'
+            name = '0.3.0'
+            desc = 'SaltyRTC WebRTC Task v0.3.0'
             released = new Date()
-            vcsTag = 'v0.2.2'
+            vcsTag = 'v0.3.0'
         }
     }
 }
