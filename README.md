@@ -128,13 +128,21 @@ Update version numbers:
 
     vim -p build.gradle README.md CHANGELOG.md
 
+Build:
+
+    ./gradlew build
+
+Add signature to README.md:
+
+    sha256sum build/outputs/aar/saltyrtc-task-webrtc-release.aar
+
 Add and commit:
 
     git commit -m "Release v${VERSION}"
 
 Publish the library to Bintray:
 
-    ./gradlew build bintrayUpload
+    ./gradlew bintrayUpload
 
 Tag and push:
 
