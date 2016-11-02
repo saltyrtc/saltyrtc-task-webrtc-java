@@ -20,6 +20,7 @@ import org.saltyrtc.client.signaling.SignalingInterface;
 import org.saltyrtc.client.signaling.state.SignalingState;
 import org.saltyrtc.client.tasks.Task;
 import org.saltyrtc.tasks.webrtc.events.MessageHandler;
+import org.saltyrtc.tasks.webrtc.exceptions.IllegalStateError;
 import org.saltyrtc.tasks.webrtc.messages.Answer;
 import org.saltyrtc.tasks.webrtc.messages.Candidates;
 import org.saltyrtc.tasks.webrtc.messages.Handover;
@@ -330,6 +331,11 @@ public class WebRTCTask implements Task {
      */
     public synchronized void handover(@NonNull PeerConnection peerConnection) {
         this.getLogger().debug("Initiate handover");
+
+        // Make sure that initialization has already happened
+        if (!this.initialized) {
+            throw new IllegalStateError("Initialization of task has not yet happened");
+        }
 
         // Make sure handover hasn't already happened
         if (this.signaling.getHandoverState().getAny()) {
