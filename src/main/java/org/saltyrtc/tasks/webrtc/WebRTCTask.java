@@ -438,14 +438,6 @@ public class WebRTCTask implements Task {
     }
 
 	/**
-	 * Send a 'close' message to the peer and close the connection.
-     */
-    public void sendClose() {
-        this.close(CloseCode.GOING_AWAY);
-        this.signaling.resetConnection(CloseCode.GOING_AWAY);
-    }
-
-	/**
      * Close the data channel.
      *
      * @param reason The close code.
