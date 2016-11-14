@@ -12,12 +12,12 @@ import org.saltyrtc.chunkedDc.Chunker;
 import org.saltyrtc.chunkedDc.Unchunker;
 import org.saltyrtc.client.annotations.NonNull;
 import org.saltyrtc.client.annotations.Nullable;
-import org.saltyrtc.client.cookie.Cookie;
+import org.saltyrtc.client.cookie.CookiePair;
 import org.saltyrtc.client.exceptions.CryptoFailedException;
 import org.saltyrtc.client.exceptions.OverflowException;
+import org.saltyrtc.client.exceptions.ProtocolException;
 import org.saltyrtc.client.exceptions.ValidationError;
 import org.saltyrtc.client.keystore.Box;
-import org.saltyrtc.client.nonce.CombinedSequence;
 import org.saltyrtc.client.nonce.CombinedSequencePair;
 import org.saltyrtc.client.nonce.CombinedSequenceSnapshot;
 import org.saltyrtc.tasks.webrtc.nonce.DataChannelNonce;
@@ -47,25 +47,28 @@ public class SecureDataChannel {
     private final AtomicInteger chunkCount = new AtomicInteger(0);
     private final Unchunker unchunker = new Unchunker();
 
+    // Wrapped data channel
     @NonNull
     private final DataChannel dc;
+    @Nullable
+    private DataChannel.Observer observer;
+
+    // Task instance
     @NonNull
     private final WebRTCTask task;
+
+    // SaltyRTC
     @NonNull
-    private final Cookie ownCookie;
-    @Nullable
-    private Cookie peerCookie;
+    private final CookiePair cookiePair;
     @NonNull
     private final CombinedSequencePair csnPair;
     @Nullable
     private Long lastIncomingCsn;
-    @Nullable
-    private DataChannel.Observer observer;
 
     public SecureDataChannel(@NonNull DataChannel dc, @NonNull WebRTCTask task) {
         this.dc = dc;
         this.task = task;
-        this.ownCookie = new Cookie();
+        this.cookiePair = new CookiePair();
         this.csnPair = new CombinedSequencePair();
 
         // Register a message listener for the unchunker
@@ -138,7 +141,7 @@ public class SecureDataChannel {
         // Validate nonce
         try {
             this.validateNonce(new DataChannelNonce(ByteBuffer.wrap(box.getNonce())));
-        } catch (ValidationError e) {
+        } catch (ValidationError | ProtocolException e) {
             LOG.error("Invalid nonce: " + e);
             LOG.error("Closing data channel");
             this.close();
@@ -213,19 +216,19 @@ public class SecureDataChannel {
     /**
      * Validate the nonce of incoming messages.
      */
-    private void validateNonce(DataChannelNonce nonce) throws ValidationError {
+    private void validateNonce(DataChannelNonce nonce) throws ValidationError, ProtocolException {
         // Make sure cookies are not the same
-        if (nonce.getCookie().equals(this.ownCookie)) {
+        if (nonce.getCookie().equals(this.cookiePair.getOurs())) {
             throw new ValidationError("Local and remote cookies are equal");
         }
 
         // If this is the first message, store peer cookie
-        if (this.peerCookie == null) {
-            this.peerCookie = nonce.getCookie();
+        if (this.cookiePair.getTheirs() == null) {
+            this.cookiePair.setTheirs(nonce.getCookie());
         }
 
         // Otherwise make sure the peer cookie didn't change
-        else if (!nonce.getCookie().equals(this.peerCookie)) {
+        else if (!nonce.getCookie().equals(this.cookiePair.getTheirs())) {
             throw new ValidationError("Remote cookie changed");
         }
 
@@ -256,7 +259,7 @@ public class SecureDataChannel {
 
         // Create nonce
         final DataChannelNonce nonce = new DataChannelNonce(
-            this.ownCookie.getBytes(),
+            this.cookiePair.getOurs().getBytes(),
             this.dc.id(),
             csn.getOverflow(), csn.getSequenceNumber());
 
