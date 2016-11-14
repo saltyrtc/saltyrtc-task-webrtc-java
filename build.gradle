@@ -55,7 +55,7 @@ repositories {
 // In this section you declare the dependencies for your production and test code
 dependencies {
     // SaltyRTC
-    compile('org.saltyrtc.client:saltyrtc-client:0.6.+') { exclude group: 'org.json' }
+    compile('org.saltyrtc.client:saltyrtc-client:0.7.+') { exclude group: 'org.json' }
 
     // The production code uses the SLF4J logging API at compile time
     compile 'org.slf4j:slf4j-api:1.7.21'
