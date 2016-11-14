@@ -61,6 +61,7 @@ public class WebRTCTask implements Task {
     // Data fields
     private static final String FIELD_EXCLUDE = "exclude";
     private static final String FIELD_MAX_PACKET_SIZE = "max_packet_size";
+    private static final String FIELD_HANDOVER = "handover";
 
     // Other constants
     private static final String DC_LABEL = "saltyrtc-signaling";
@@ -77,6 +78,9 @@ public class WebRTCTask implements Task {
     // Effective max packet size
     private Integer maxPacketSize;
 
+    // Whether to hand over
+    private boolean doHandover = true;
+
     // Signaling
     private SignalingInterface signaling;
 
@@ -87,6 +91,13 @@ public class WebRTCTask implements Task {
     // Message handler
     private MessageHandler messageHandler = null;
 
+    public WebRTCTask() { }
+
+    public WebRTCTask(boolean doHandover) {
+        this.doHandover = doHandover;
+    }
+
+    // Return logger instance
     private Logger getLogger() {
         String name;
         if (this.signaling == null) {
@@ -101,6 +112,7 @@ public class WebRTCTask implements Task {
     public void init(SignalingInterface signaling, Map<Object, Object> data) throws ValidationError {
         this.processExcludeList(data.get(FIELD_EXCLUDE));
         this.processMaxPacketSize(data.get(FIELD_MAX_PACKET_SIZE));
+        this.processHandover(data.get(FIELD_HANDOVER));
         this.signaling = signaling;
         this.initialized = true;
     }
@@ -151,6 +163,13 @@ public class WebRTCTask implements Task {
         }
     }
 
+    private void processHandover(Object value) throws ValidationError {
+        final boolean doHandover = ValidationHelper.validateBoolean(value, FIELD_HANDOVER);
+        if (!doHandover) {
+            this.doHandover = false;
+        }
+    }
+
 	/**
      * Set the message handler. It will be notified on incoming messages.
      */
@@ -186,6 +205,11 @@ public class WebRTCTask implements Task {
                     }
                     } break;
                 case "handover": {
+                    if (!this.doHandover) {
+                        this.getLogger().error("Received unexpected handover message from peer");
+                        this.signaling.resetConnection(CloseCode.PROTOCOL_ERROR);
+                        break;
+                    }
                     if (!this.signaling.getHandoverState().getLocal()) {
                         this.sendHandover();
                     }
@@ -256,6 +280,7 @@ public class WebRTCTask implements Task {
         final Map<Object, Object> map = new HashMap<>();
         map.put(WebRTCTask.FIELD_EXCLUDE, this.exclude);
         map.put(WebRTCTask.FIELD_MAX_PACKET_SIZE, MAX_PACKET_SIZE);
+        map.put(WebRTCTask.FIELD_HANDOVER, this.doHandover);
         return map;
     }
 
@@ -326,11 +351,19 @@ public class WebRTCTask implements Task {
 	/**
      * Do the handover from WebSocket to WebRTC data channel on the specified peer connection.
      *
+     * Return a boolean indicating whether the handover has been initiated.
+     *
      * This operation is asynchronous. To get notified when the handover is finished, subscribe to
      * the SaltyRTC `HandoverEvent`.
      */
-    public synchronized void handover(@NonNull PeerConnection peerConnection) {
+    public synchronized boolean handover(@NonNull PeerConnection peerConnection) {
         this.getLogger().debug("Initiate handover");
+
+        // Make sure this is intended
+        if (!this.doHandover) {
+            this.getLogger().error("Cannot do handover: Either us or our peer set handover=false");
+            return false;
+        }
 
         // Make sure that initialization has already happened
         if (!this.initialized) {
@@ -340,7 +373,7 @@ public class WebRTCTask implements Task {
         // Make sure handover hasn't already happened
         if (this.signaling.getHandoverState().getAny()) {
             this.getLogger().error("Handover already in process or finished!");
-            return;
+            return false;
         }
 
         // Configure new data channel
@@ -398,6 +431,8 @@ public class WebRTCTask implements Task {
                 WebRTCTask.this.signaling.onSignalingPeerMessage(buffer.data.array());
             }
         });
+
+        return true;
     }
 
     private synchronized void sendHandover() {
