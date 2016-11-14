@@ -12,6 +12,11 @@ Possible log types:
 - `[security]` to invite users to upgrade in case of vulnerabilities.
 
 
+### v0.3.1 (2016-11-14)
+
+- [added] Make handover optional (#6)
+- [changed] Update saltyrtc-client to v0.7.+
+
 ### v0.3.0 (2016-10-27)
 
 - [changed] Update saltyrtc-client to v0.6.+
