@@ -7,6 +7,15 @@ android:
     - build-tools-23.0.3
     # The SDK version used to compile your project
     - android-23
+    # Specify at least one system image,
+    # if you need to run emulator(s) during your tests
+    - sys-img-armeabi-v7a-android-21
+  licenses:
+    - 'android-sdk-license-.+'
+env:
+  global:
+    # install timeout in minutes (2 minutes by default)
+    - ADB_INSTALL_TIMEOUT=8
 jdk:
   #- openjdk7 # disable until https://github.com/travis-ci/travis-ci/issues/5227 is fixed
   - oraclejdk7
@@ -22,6 +31,9 @@ before_script:
   # Show OS
   - cat /etc/os-release
   - python3 --version
+  # Create AVD
+  - echo no | android create avd --force -n test -t android-21 --abi armeabi-v7a
+  - emulator -avd test -no-skin -no-audio -no-window &
   # PPAs
   - sudo add-apt-repository -y ppa:fkrull/deadsnakes
   - sudo add-apt-repository -y ppa:chris-lea/libsodium
@@ -48,6 +60,9 @@ before_script:
     cd ..
   # Enable debug in integration tests
   - sed -i 's/DEBUG = false/DEBUG = true/' src/test/java/org/saltyrtc/tasks/webrtc/integration/ConnectionTest.java
+  # Wait for emulator
+  - android-wait-for-emulator
+  - adb shell input keyevent 82 &
 after_script:
   # Stop SaltyRTC server
   - kill -INT $SALTYRTC_SERVER_PID
