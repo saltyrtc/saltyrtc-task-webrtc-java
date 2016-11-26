@@ -120,49 +120,35 @@ These are the SHA256 hashes for the published releases of this project:
 
 Set variables:
 
-```shell
-export VERSION=X.Y.Z
-export GPG_KEY=E7ADD9914E260E8B35DFB50665FDE935573ACDA6
-export BINTRAY_USER=...
-export BINTRAY_KEY=...
-```
+    export VERSION=X.Y.Z
+    export GPG_KEY=E7ADD9914E260E8B35DFB50665FDE935573ACDA6
+    export BINTRAY_USER=...
+    export BINTRAY_KEY=...
 
 Update version numbers:
 
-```shell
-vim -p build.gradle README.md CHANGELOG.md
-```
+    vim -p build.gradle README.md CHANGELOG.md
 
 Build:
 
-```shell
-./gradlew build
-```
+    ./gradlew build
 
-Add signature to README.md:
+Add hash to README.md:
 
-```shell
-sha256sum build/outputs/aar/saltyrtc-task-webrtc-release.aar
-```
+    sha256sum build/outputs/aar/saltyrtc-task-webrtc-release.aar
 
 Add and commit:
 
-```shell
-git commit -m "Release v${VERSION}"
-```
+    git commit -m "Release v${VERSION}"
 
 Publish the library to Bintray:
 
-```shell
-./gradlew bintrayUpload
-```
+    ./gradlew bintrayUpload
 
 Tag and push:
 
-```shell
-git tag -s -u ${GPG_KEY} v${VERSION} -m "Version ${VERSION}"
-git push && git push --tags
-```
+    git tag -s -u ${GPG_KEY} v${VERSION} -m "Version ${VERSION}"
+    git push && git push --tags
 
 ## License
 
