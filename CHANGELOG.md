@@ -11,6 +11,9 @@ Possible log types:
 - `[fixed]` for any bug fixes.
 - `[security]` to invite users to upgrade in case of vulnerabilities.
 
+### v0.3.3 (2016-11-29)
+
+- [fixed] Fix NPE in `WebRTCTask.close()`
 
 ### v0.3.2 (2016-11-29)
 
