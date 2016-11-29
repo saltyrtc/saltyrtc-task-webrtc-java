@@ -177,6 +177,13 @@ public class WebRTCTask implements Task {
         this.messageHandler = messageHandler;
     }
 
+    /**
+     * Unset the message handler.
+     */
+    public void clearMessageHandler() {
+        this.messageHandler = null;
+    }
+
 	/**
      * Handle incoming task messages, notify message handler.
      */

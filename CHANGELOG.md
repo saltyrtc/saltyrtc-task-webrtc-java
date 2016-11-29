@@ -12,6 +12,10 @@ Possible log types:
 - `[security]` to invite users to upgrade in case of vulnerabilities.
 
 
+### v0.3.2 (2016-11-29)
+
+- [added] Add `clearMessageHandler` method
+
 ### v0.3.1 (2016-11-14)
 
 - [added] Make handover optional (#6)
