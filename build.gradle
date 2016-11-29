@@ -13,10 +13,12 @@ plugins {
     id 'com.jfrog.bintray' version '1.7'
 }
 
+def app_version = '0.3.2'
+
 apply plugin: 'witness'
 apply plugin: 'com.android.library'
 group = 'org.saltyrtc.tasks.webrtc'
-version = '0.3.2'
+version = app_version
 
 // Android configuration
 android {
@@ -128,10 +130,10 @@ bintray {
         licenses = ['MIT', 'Apache-2.0']
         labels = ['saltyrtc', 'webrtc', 'data channels', 'signaling', 'secure']
         version {
-            name = '0.3.2'
-            desc = 'SaltyRTC WebRTC Task v0.3.2'
+            name = app_version
+            desc = 'SaltyRTC WebRTC Task v${app_version}'
             released = new Date()
-            vcsTag = 'v0.3.2'
+            vcsTag = 'v${app_version}'
         }
     }
 }
