@@ -11,6 +11,10 @@ Possible log types:
 - `[fixed]` for any bug fixes.
 - `[security]` to invite users to upgrade in case of vulnerabilities.
 
+### v0.4.0 (2016-12-12)
+
+- [changed] Update saltyrtc-client to v0.8.+
+
 ### v0.3.3 (2016-11-29)
 
 - [fixed] Fix NPE in `WebRTCTask.close()`
