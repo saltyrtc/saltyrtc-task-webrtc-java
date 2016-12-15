@@ -9,10 +9,13 @@
 package org.saltyrtc.tasks.webrtc.integration;
 
 import android.content.Context;
+import android.support.test.filters.LargeTest;
+import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.saltyrtc.client.SaltyRTC;
 import org.saltyrtc.client.SaltyRTCBuilder;
 import org.saltyrtc.client.events.EventHandler;
@@ -41,6 +44,8 @@ import javax.net.ssl.SSLContext;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+@RunWith(AndroidJUnit4.class)
+@LargeTest
 public class ConnectionTest {
 
     static {
@@ -109,7 +114,7 @@ public class ConnectionTest {
         );
     }
 
-    //@Before
+    @Before
     public void setUp() throws Exception {
         // Get SSL context
         final SSLContext sslContext = SSLContextHelper.getSSLContext();
@@ -182,10 +187,10 @@ public class ConnectionTest {
         });
     }
 
-    //@Test
+    @Test
     public void testConnectSpeed() throws Exception {
         // Max 1s for handshake
-        final int MAX_DURATION = 1000;
+        final int MAX_DURATION = 1800;
 
         // Latches to test connection state
         final CountDownLatch connectedPeers = new CountDownLatch(2);
@@ -230,11 +235,8 @@ public class ConnectionTest {
                    durationMs < MAX_DURATION);
     }
 
-    //@Test
+    @Test
     public void testHandover() throws Exception {
-        // Max 1.5s until handover
-        final int MAX_DURATION = 1500;
-
         // Latches to test connection state
         final CountDownLatch connectedPeers = new CountDownLatch(2);
         initiator.events.signalingStateChanged.register(new EventHandler<SignalingStateChangedEvent>() {
@@ -257,31 +259,30 @@ public class ConnectionTest {
         });
 
         // Connect server
-        final long startTime = System.nanoTime();
         initiator.connect();
         responder.connect();
 
         // Wait for full handshake
-        final boolean bothConnected = connectedPeers.await(2 * MAX_DURATION, TimeUnit.MILLISECONDS);
-        final long endTime = System.nanoTime();
+        final boolean bothConnected = connectedPeers.await(5000, TimeUnit.MILLISECONDS);
         assertTrue(bothConnected);
         assertFalse(eventsCalled.get("responderError"));
         assertFalse(eventsCalled.get("initiatorError"));
-        long durationMs = (endTime - startTime) / 1000 / 1000;
-        System.out.println("Full handshake took " + durationMs + " milliseconds");
 
         // Disconnect
         responder.disconnect();
         initiator.disconnect();
 
-        assertTrue("Duration time (" + durationMs + "ms) should be less than " + MAX_DURATION + "ms",
-            durationMs < MAX_DURATION);
+        // TODO: Actual handover
     }
 
     @After
     public void tearDown() {
-        initiator.disconnect();
-        responder.disconnect();
+        if (this.initiator != null) {
+            initiator.disconnect();
+        }
+        if (this.responder != null) {
+            responder.disconnect();
+        }
     }
 
 }
