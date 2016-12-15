@@ -8,46 +8,50 @@
 
 package org.saltyrtc.tasks.webrtc;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import android.util.Base64;
+
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.KeyManagementException;
+import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 
 public class SSLContextHelper {
 
+    public static final String derCertBase64 = "";
+
     public static SSLContext getSSLContext() throws KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException, KeyManagementException {
         SSLContext sslContext;
 
-        // If a file called "saltyrtc.jks" exists, we use it
-        File kf = new File("saltyrtc.jks");
-        if (!Config.IGNORE_JKS && kf.exists() && !kf.isDirectory()) {
-            System.out.println("Using saltyrtc.jks as TLS keystore");
+        // If the derCertBase64 var is not empty, use it
+        if (!derCertBase64.isEmpty()) {
+            System.out.println("Using custom certificate as TLS keystore");
 
-            // Initialize KeyStore
-            final String password = "saltyrtc";
-            java.security.KeyStore ks = java.security.KeyStore.getInstance("JKS");
-            try {
-                ks.load(new FileInputStream(kf), password.toCharArray());
-            } catch (FileNotFoundException e) {
-                // Should not happen, as we check previously.
-                e.printStackTrace();
-                throw new RuntimeException("FileNotFoundException");
-            }
+            // Load certificate into trust store
+            final byte[] der = Base64.decode(derCertBase64, Base64.DEFAULT);
+            CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+            X509Certificate cert = (X509Certificate) certificateFactory.generateCertificate(new ByteArrayInputStream(der));
+            String alias = cert.getSubjectX500Principal().getName();
+            KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            trustStore.load(null);
+            trustStore.setCertificateEntry(alias, cert);
 
-            // Initialize TrustManager
-            TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
-            tmf.init(ks);
+            // Get a trust manager
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance("X509");
+            tmf.init(trustStore);
+            TrustManager[] trustManagers = tmf.getTrustManagers();
 
-            // Initialize SSLContext
+            // Initialize SSL context
             sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(null, tmf.getTrustManagers(), null);
+            sslContext.init(null, trustManagers, null);
         } else {
             System.out.println("Using default SSLContext");
             sslContext = SSLContext.getDefault();

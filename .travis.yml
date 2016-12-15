@@ -34,7 +34,9 @@ before_script:
   # Create test certificate for localhost
   - openssl req -new -newkey rsa:1024 -nodes -sha256 -out saltyrtc.csr -keyout saltyrtc.key -subj '/C=CH/O=SaltyRTC/CN=localhost/'
   - openssl x509 -req -days 365 -in saltyrtc.csr -signkey saltyrtc.key -out saltyrtc.crt
-  - keytool -import -trustcacerts -alias root -file saltyrtc.crt -keystore saltyrtc.jks -storetype JKS -storepass saltyrtc -noprompt
+  # Write test certificate to test config
+  - CERT_BASE64=$(openssl x509 -outform der -in saltyrtc.crt | base64 -w 0)
+    sed -i "s/derCertBase64 = \"\"/derCertBase64 = \"${CERT_BASE64}\"/" src/androidTest/java/org/saltyrtc/tasks/webrtc/SSLContextHelper.java
   # Start SaltyRTC server
   - git clone https://github.com/saltyrtc/saltyrtc-server-python -b master
   - export SALTYRTC_SERVER_PERMANENT_KEY=0919b266ce1855419e4066fc076b39855e728768e3afa773105edd2e37037c20
