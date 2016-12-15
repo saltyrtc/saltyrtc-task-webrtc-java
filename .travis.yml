@@ -47,7 +47,7 @@ before_script:
     sleep 2
     cd ..
   # Enable debug in integration tests
-  - sed -i 's/DEBUG = false/DEBUG = true/' src/test/java/org/saltyrtc/tasks/webrtc/integration/ConnectionTest.java
+  - sed -i 's/DEBUG = false/DEBUG = true/' src/androidTest/java/org/saltyrtc/tasks/webrtc/integration/ConnectionTest.java
 after_script:
   # Stop SaltyRTC server
   - kill -INT $SALTYRTC_SERVER_PID
