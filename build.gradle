@@ -15,6 +15,9 @@ plugins {
 
 def app_version = '0.4.0'
 
+targetCompatibility = '1.7'
+sourceCompatibility = '1.7'
+
 apply plugin: 'witness'
 apply plugin: 'com.android.library'
 group = 'org.saltyrtc.tasks.webrtc'
