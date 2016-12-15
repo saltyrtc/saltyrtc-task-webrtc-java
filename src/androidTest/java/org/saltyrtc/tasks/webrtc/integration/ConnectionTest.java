@@ -12,8 +12,6 @@ import android.content.Context;
 import android.support.test.filters.LargeTest;
 import android.support.test.runner.AndroidJUnit4;
 
-import junit.framework.TestCase;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -287,8 +285,12 @@ public class ConnectionTest {
 
     @After
     public void tearDown() {
-        initiator.disconnect();
-        responder.disconnect();
+        if (this.initiator != null) {
+            initiator.disconnect();
+        }
+        if (this.responder != null) {
+            responder.disconnect();
+        }
     }
 
 }
