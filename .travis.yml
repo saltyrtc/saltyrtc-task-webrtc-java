@@ -8,8 +8,6 @@ android:
     # The SDK version used to compile your project
     - android-23
 jdk:
-  #- openjdk7 # disable until https://github.com/travis-ci/travis-ci/issues/5227 is fixed
-  - oraclejdk7
   - oraclejdk8
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
