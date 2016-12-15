@@ -9,7 +9,7 @@ android:
     - android-23
     # Specify at least one system image,
     # if you need to run emulator(s) during your tests
-    - sys-img-armeabi-v7a-android-22
+    - sys-img-armeabi-v7a-android-24
 jdk:
   - oraclejdk8
 before_cache:
@@ -24,7 +24,8 @@ before_script:
   - cat /etc/os-release
   - python3 --version
   # Emulator Management: Create, Start
-  - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a
+  - android list targets
+  - echo no | android create avd --force -n test -t android-24 --abi armeabi-v7a
   - emulator -avd test -no-audio -no-window &
   # PPAs
   - sudo add-apt-repository -y ppa:fkrull/deadsnakes
