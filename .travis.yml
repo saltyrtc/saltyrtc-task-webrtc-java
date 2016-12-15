@@ -11,8 +11,6 @@ android:
     # if you need to run emulator(s) during your tests
     - sys-img-armeabi-v7a-android-22
 jdk:
-  #- openjdk7 # disable until https://github.com/travis-ci/travis-ci/issues/5227 is fixed
-  - oraclejdk7
   - oraclejdk8
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
