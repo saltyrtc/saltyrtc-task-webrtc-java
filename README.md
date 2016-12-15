@@ -39,10 +39,10 @@ Maven:
 
 ## Usage
 
-Instantiate the task with the peer connection.
+Instantiate the task.
 
 ```java
-final WebRTCTask task = new WebRTCTask(peerConnection);
+final WebRTCTask task = new WebRTCTask();
 ```
 
 Then, register a message handler:

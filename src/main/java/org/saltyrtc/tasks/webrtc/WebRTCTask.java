@@ -56,7 +56,7 @@ public class WebRTCTask implements Task {
 
     // Constants as defined by the specification
     private static final String PROTOCOL_NAME = "v0.webrtc.tasks.saltyrtc.org";
-    private static final Integer MAX_PACKET_SIZE = 16384;
+    private static final Integer DEFAULT_MAX_PACKET_SIZE = 16384;
 
     // Data fields
     private static final String FIELD_EXCLUDE = "exclude";
@@ -75,8 +75,9 @@ public class WebRTCTask implements Task {
     @Nullable
     private Integer dcId = null;
 
-    // Effective max packet size
-    private Integer maxPacketSize;
+    // Max packet size
+    private Integer requestedMaxPacketSize = DEFAULT_MAX_PACKET_SIZE;
+    private Integer negotiatedMaxPacketSize;
 
     // Whether to hand over
     private boolean doHandover = true;
@@ -95,6 +96,15 @@ public class WebRTCTask implements Task {
 
     public WebRTCTask(boolean doHandover) {
         this.doHandover = doHandover;
+    }
+
+    public WebRTCTask(int maxPacketSize) {
+        this.requestedMaxPacketSize = maxPacketSize;
+    }
+
+    public WebRTCTask(boolean doHandover, int maxPacketSize) {
+        this.doHandover = doHandover;
+        this.requestedMaxPacketSize = maxPacketSize;
     }
 
     // Return logger instance
@@ -154,12 +164,12 @@ public class WebRTCTask implements Task {
      */
     private void processMaxPacketSize(Object value) throws ValidationError {
         final Integer maxPacketSize = ValidationHelper.validateInteger(value, 0, Integer.MAX_VALUE, FIELD_MAX_PACKET_SIZE);
-        if (maxPacketSize == 0 && MAX_PACKET_SIZE == 0) {
-            this.maxPacketSize = 0;
-        } else if (maxPacketSize == 0 || MAX_PACKET_SIZE == 0) {
-            this.maxPacketSize = Math.max(maxPacketSize, MAX_PACKET_SIZE);
+        if (maxPacketSize == 0 && this.requestedMaxPacketSize == 0) {
+            this.negotiatedMaxPacketSize = 0;
+        } else if (maxPacketSize == 0 || this.requestedMaxPacketSize == 0) {
+            this.negotiatedMaxPacketSize = Math.max(maxPacketSize, this.requestedMaxPacketSize);
         } else {
-            this.maxPacketSize = Math.min(maxPacketSize, MAX_PACKET_SIZE);
+            this.negotiatedMaxPacketSize = Math.min(maxPacketSize, this.requestedMaxPacketSize);
         }
     }
 
@@ -271,12 +281,12 @@ public class WebRTCTask implements Task {
     }
 
     /**
-     * Return the max packet size, or `null` if the task has not yet been initialized.
+     * Return the negotiated max packet size, or `null` if the task has not yet been initialized.
      */
     @Nullable
     public Integer getMaxPacketSize() {
         if (this.initialized) {
-            return this.maxPacketSize;
+            return this.negotiatedMaxPacketSize;
         }
         return null;
     }
@@ -286,7 +296,7 @@ public class WebRTCTask implements Task {
     public Map<Object, Object> getData() {
         final Map<Object, Object> map = new HashMap<>();
         map.put(WebRTCTask.FIELD_EXCLUDE, this.exclude);
-        map.put(WebRTCTask.FIELD_MAX_PACKET_SIZE, MAX_PACKET_SIZE);
+        map.put(WebRTCTask.FIELD_MAX_PACKET_SIZE, this.requestedMaxPacketSize);
         map.put(WebRTCTask.FIELD_HANDOVER, this.doHandover);
         return map;
     }
