@@ -22,7 +22,7 @@ It includes the WebRTC PeerConnection build for the `armeabi-v7a` and `x86` arch
 Gradle:
 
 ```groovy
-compile 'org.saltyrtc.tasks.webrtc:saltyrtc-task-webrtc:0.5.0'
+compile 'org.saltyrtc.tasks.webrtc:saltyrtc-task-webrtc:0.5.1'
 ```
 
 Maven:
@@ -31,7 +31,7 @@ Maven:
 <dependency>
   <groupId>org.saltyrtc.tasks.webrtc</groupId>
   <artifactId>saltyrtc-task-webrtc</artifactId>
-  <version>0.5.0</version>
+  <version>0.5.1</version>
   <type>pom</type>
 </dependency>
 ```
@@ -112,6 +112,7 @@ to make sure that you always get the exact same versions of your dependencies.
 
 These are the SHA256 hashes for the published releases of this project:
 
+- v0.5.1: `ec74be6551dd4c886f4f4c4928b5645249b9dd203836a5808aed9d6a602c251c`
 - v0.5.0: `6949efa248dcbf22b9c2ffec1063ce54557cfce4be11ef6f4d9fcb0549bca150`
 - v0.4.1: `105423ed377e8c149cb6a4fe67be63e43bd83102191740edc4e3c4b0f3a9cbfe`
 - v0.4.0: `a71ec1a7af32c104179569d037fea249a9c399d2eb27b07456d9ae578170dc2d`
