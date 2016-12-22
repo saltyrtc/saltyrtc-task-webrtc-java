@@ -11,6 +11,10 @@ Possible log types:
 - `[fixed]` for any bug fixes.
 - `[security]` to invite users to upgrade in case of vulnerabilities.
 
+### v0.5.0 (2016-12-22)
+
+- [changed] Update libjingle builds
+
 ### v0.4.1 (2016-12-15)
 
 - [added] Make max packet size configurable (#14)

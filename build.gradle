@@ -13,7 +13,7 @@ plugins {
     id 'com.jfrog.bintray' version '1.7'
 }
 
-def app_version = '0.4.1'
+def app_version = '0.5.0'
 
 apply plugin: 'witness'
 apply plugin: 'com.android.library'
@@ -68,7 +68,7 @@ dependencies {
 
     // WebRTC RTCPeerConnection
     compile files('libs/base_java.jar')
-    compile files('libs/libjingle_peerconnection.jar')
+    compile files('libs/libjingle_peerconnection_java.jar')
 
     // Dependency: Msgpack serialization
     compile 'org.msgpack:msgpack-core:0.8.11'
