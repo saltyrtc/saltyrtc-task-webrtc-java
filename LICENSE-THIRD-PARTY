@@ -3,6 +3,7 @@
 License for the following files:
 
 - libs/base_java.jar
+- libs/audio_device_java.jar
 - libs/libjingle_peerconnection_java.jar
 - libs/x86/libjingle_peerconnection_so.so
 - libs/armeabi-v7a/libjingle_peerconnection_so.so

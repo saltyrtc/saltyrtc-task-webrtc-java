@@ -68,6 +68,7 @@ dependencies {
 
     // WebRTC RTCPeerConnection
     compile files('libs/base_java.jar')
+    compile files('libs/audio_device_java.jar')
     compile files('libs/libjingle_peerconnection_java.jar')
 
     // Dependency: Msgpack serialization
