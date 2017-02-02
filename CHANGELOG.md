@@ -11,6 +11,10 @@ Possible log types:
 - `[fixed]` for any bug fixes.
 - `[security]` to invite users to upgrade in case of vulnerabilities.
 
+### v0.6.1 (2017-02-02)
+
+- [fixed] Added missing library (`audio_device_java.jar`)
+
 ### v0.6.0 (2017-02-02)
 
 - [changed] Update libjingle builds (commit ed01647ea97dbe0ea25ab915237e39143b1978d7)

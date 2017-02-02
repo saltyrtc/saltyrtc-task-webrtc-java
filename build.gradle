@@ -13,7 +13,7 @@ plugins {
     id 'com.jfrog.bintray' version '1.7'
 }
 
-def app_version = '0.6.0'
+def app_version = '0.6.1'
 
 apply plugin: 'witness'
 apply plugin: 'com.android.library'
