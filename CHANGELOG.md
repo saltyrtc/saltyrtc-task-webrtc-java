@@ -11,6 +11,10 @@ Possible log types:
 - `[fixed]` for any bug fixes.
 - `[security]` to invite users to upgrade in case of vulnerabilities.
 
+### v0.6.0 (2017-02-02)
+
+- [changed] Update libjingle builds (commit ed01647ea97dbe0ea25ab915237e39143b1978d7)
+
 ### v0.5.1 (2016-12-22)
 
 - [fixed] Fix bad libjingle library path
