@@ -10,6 +10,10 @@ implementation for Java 7+.
 For now, as long as `RTCPeerConnection` only works on Android, this library
 will not work outside of projects.
 
+This library includes a WebRTC build based on commit
+ed01647ea97dbe0ea25ab915237e39143b1978d7 (2017-02-02 04:23:24 -0800). The build
+was created using [webrtc-build-docker](https://github.com/threema-ch/webrtc-build-docker).
+
 The development is still ongoing, the current version is only at alpha-level
 and should not be used for production yet.
 
