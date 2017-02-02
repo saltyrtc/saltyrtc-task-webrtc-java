@@ -126,40 +126,6 @@ These are the SHA256 hashes for the published releases of this project:
 - v0.3.0: `66a92915c1936a8065aa2cbb824ee6ba91d0c2667c22aa0f0bc88a79a4f710fe`
 
 
-## Publishing
-
-Set variables:
-
-    export VERSION=X.Y.Z
-    export GPG_KEY=E7ADD9914E260E8B35DFB50665FDE935573ACDA6
-    export BINTRAY_USER=...
-    export BINTRAY_KEY=...
-
-Update version numbers:
-
-    vim -p build.gradle README.md CHANGELOG.md
-
-Build:
-
-    ./gradlew build
-
-Add hash to README.md:
-
-    sha256sum build/outputs/aar/saltyrtc-task-webrtc-release.aar
-
-Add and commit:
-
-    git commit -m "Release v${VERSION}"
-
-Publish the library to Bintray:
-
-    ./gradlew bintrayUpload
-
-Tag and push:
-
-    git tag -s -u ${GPG_KEY} v${VERSION} -m "Version ${VERSION}"
-    git push && git push --tags
-
 ## License
 
     Copyright (c) 2016 Threema GmbH
