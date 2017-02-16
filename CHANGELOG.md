@@ -11,6 +11,10 @@ Possible log types:
 - `[fixed]` for any bug fixes.
 - `[security]` to invite users to upgrade in case of vulnerabilities.
 
+### v0.9.1 (2017-02-16)
+
+- [changed] Remove `allowBackup="true"` and `android:supportsRtl="true"` from `AndroidManifest.xml`
+
 ### v0.9.0 (2017-02-07)
 
 - [changed] Update saltyrtc-client to v0.9.+

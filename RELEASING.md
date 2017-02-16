@@ -21,7 +21,7 @@ Add hash to README.md:
 
 Add and commit:
 
-    git commit -m "Release v${VERSION}"
+    git commit -S${GPG_KEY} -m "Release v${VERSION}"
 
 Publish the library to Bintray:
 

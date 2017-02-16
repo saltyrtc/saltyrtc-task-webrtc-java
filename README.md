@@ -26,7 +26,7 @@ based on commit `ed01647ea97dbe0ea25ab915237e39143b1978d7` from `2017-02-02
 Gradle:
 
 ```groovy
-compile 'org.saltyrtc.tasks.webrtc:saltyrtc-task-webrtc:0.9.0'
+compile 'org.saltyrtc.tasks.webrtc:saltyrtc-task-webrtc:0.9.1'
 ```
 
 Maven:
@@ -35,7 +35,7 @@ Maven:
 <dependency>
   <groupId>org.saltyrtc.tasks.webrtc</groupId>
   <artifactId>saltyrtc-task-webrtc</artifactId>
-  <version>0.9.0</version>
+  <version>0.9.1</version>
   <type>pom</type>
 </dependency>
 ```
@@ -116,6 +116,7 @@ to make sure that you always get the exact same versions of your dependencies.
 
 These are the SHA256 hashes for the published releases of this project:
 
+- v0.9.1: `73694f9a4912344457f1c6ae19aaa788131e551c9781554663c3411ce86da6bc`
 - v0.9.0: `f9dd33fa19b3be5245ac96c5464b2d1fb6506f87696e272a8264ae6726f09900`
 - v0.6.1: `b928cd705501e7be8cf4be0f54fb890f21a5abfd33899d603604bbb7681a7ef1`
 - v0.6.0: `7487a1c6e0be4dce7627b62dc1cc9eb17d4d8da38ec8ec88e928163596e50795`
