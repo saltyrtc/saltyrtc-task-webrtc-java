@@ -76,8 +76,8 @@ dependencies {
     compile files('libs/libjingle_peerconnection_java.jar')
 
     // Dependency: Msgpack serialization
-    compile 'org.msgpack:msgpack-core:0.8.11'
-    compile 'org.msgpack:jackson-dataformat-msgpack:0.8.11'
+    compile 'org.msgpack:msgpack-core:0.8.12'
+    compile 'org.msgpack:jackson-dataformat-msgpack:0.8.12'
 
     // Dependency: Binary chunking
     compile 'org.saltyrtc.chunked-dc:chunked-dc:0.2.0'
@@ -95,8 +95,8 @@ dependencies {
 dependencyVerification {
     verify = [
             'org.slf4j:slf4j-api:1d5aeb6bd98b0fdd151269eae941c05f6468a791ea0f1e68d8e7fe518af3e7df',
-            'org.msgpack:msgpack-core:2a92184bb2d470656a7388c204221ce2e6dd28cd0cac8dae700656a06699e8bb',
-            'org.msgpack:jackson-dataformat-msgpack:ea532e53a01fef5f8b0c3d86a18124433baa69bdee5ccd5d9616ed5cb3237d37',
+            'org.msgpack:msgpack-core:0d7058c6ffeefbb47a4c80ceba0526931b39944291ebd134cac84882aa515721',
+            'org.msgpack:jackson-dataformat-msgpack:387eb22a21f21a3797665d1f721be0a255eed80be2281c27b59dccc7d10817c7',
             'com.fasterxml.jackson.core:jackson-databind:215022eed86bde62e8ff5e9b04297a6a7a896df89c80576aa2291e5e1142a94b',
             'com.fasterxml.jackson.core:jackson-annotations:f775d20b6ad1ef122f453b2d7aeebb009523f7cdf89a674fe2f303221c95696b',
             'com.fasterxml.jackson.core:jackson-core:526ab629da103bf2c93e72bd541d7c34e498182460c56d5f48b03dbac91b1df9',
