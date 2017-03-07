@@ -17,6 +17,7 @@ def app_version = '0.9.2'
 
 apply plugin: 'witness'
 apply plugin: 'com.android.library'
+apply plugin: 'maven'
 group = 'org.saltyrtc.tasks.webrtc'
 version = app_version
 
@@ -122,6 +123,7 @@ artifacts {
     archives androidJavadocsJar
 }
 
+// Upload to Bintray
 bintray {
     user = System.getenv('BINTRAY_USER')
     key = System.getenv('BINTRAY_KEY')
@@ -143,6 +145,18 @@ bintray {
             desc = 'SaltyRTC WebRTC Task v${app_version}'
             released = new Date()
             vcsTag = 'v${app_version}'
+        }
+    }
+}
+
+// Upload to local Maven repo for testing
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: uri('/tmp/maven/'))
+            pom.version = app_version
+            pom.artifactId = 'saltyrtc-task-webrtc'
+            pom.packaging = 'aar'
         }
     }
 }

@@ -106,6 +106,21 @@ The library uses the slf4j logging API. Configure a logger (e.g. slf4j-simple)
 to see the log output.
 
 
+## Testing
+
+To try a development version of the library, you can build a local version to
+the maven repository at `/tmp/maven`:
+
+    ./gradlew uploadArchives
+
+Include it in your project like this:
+
+    repositories {
+        ...
+        maven { url "/tmp/maven" }
+    }
+
+
 ## Dependency Verification
 
 This project uses [gradle-witness](https://github.com/WhisperSystems/gradle-witness)
