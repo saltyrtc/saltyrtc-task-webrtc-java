@@ -121,12 +121,6 @@ Include it in your project like this:
     }
 
 
-## Dependency Verification
-
-This project uses [gradle-witness](https://github.com/WhisperSystems/gradle-witness)
-to make sure that you always get the exact same versions of your dependencies.
-
-
 ## Hashes
 
 These are the SHA256 hashes for the published releases of this project:
