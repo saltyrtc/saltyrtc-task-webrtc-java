@@ -11,6 +11,12 @@ Possible log types:
 - `[fixed]` for any bug fixes.
 - `[security]` to invite users to upgrade in case of vulnerabilities.
 
+### v0.10.0 (2017-04-03)
+
+- [changed] Update saltyrtc-client to v0.10.+
+- [changed] Update chunked-dc to v1.0.0
+- [changed] Remove gradle witness
+
 ### v0.9.2 (2017-02-28)
 
 - [changed] Fix problems with transitive dependency version pinning

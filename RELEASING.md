@@ -13,6 +13,7 @@ Update version numbers:
 
 Build:
 
+    rm -r build
     ./gradlew build
 
 Add hash to README.md:
