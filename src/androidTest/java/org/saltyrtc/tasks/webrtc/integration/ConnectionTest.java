@@ -32,6 +32,7 @@ import org.webrtc.MediaConstraints;
 import org.webrtc.MediaStream;
 import org.webrtc.PeerConnection;
 import org.webrtc.PeerConnectionFactory;
+import org.webrtc.RtpReceiver;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -91,6 +92,9 @@ public class ConnectionTest {
         }
         @Override
         public void onRenegotiationNeeded() {
+        }
+        @Override
+        public void onAddTrack(RtpReceiver rtpReceiver, MediaStream[] mediaStreams) {
         }
     }
 
