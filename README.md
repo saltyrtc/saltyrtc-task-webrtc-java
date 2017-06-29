@@ -13,6 +13,9 @@ will not work outside of projects.
 The development is still ongoing, the current version is only at alpha-level
 and should not be used for production yet.
 
+For an application example, please see our [demo
+application](https://github.com/saltyrtc/saltyrtc-demo).
+
 
 ## Installing
 
@@ -26,7 +29,7 @@ based on commit `ed01647ea97dbe0ea25ab915237e39143b1978d7` from `2017-02-02
 Gradle:
 
 ```groovy
-compile 'org.saltyrtc.tasks.webrtc:saltyrtc-task-webrtc:0.10.0'
+compile 'org.saltyrtc.tasks.webrtc:saltyrtc-task-webrtc:0.11.0'
 ```
 
 Maven:
@@ -35,7 +38,7 @@ Maven:
 <dependency>
   <groupId>org.saltyrtc.tasks.webrtc</groupId>
   <artifactId>saltyrtc-task-webrtc</artifactId>
-  <version>0.10.0</version>
+  <version>0.11.0</version>
   <type>pom</type>
 </dependency>
 ```
@@ -125,7 +128,8 @@ Include it in your project like this:
 
 These are the SHA256 hashes for the published releases of this project:
 
-- v10.0.0: `fd8602252a130836d0be309e0fdd2bb72741cc92e4346d2ce0e0a95980ae9361`
+- v0.11.0: `b4161390b63a0e9166e9991357e57c4a28a1f452f378af0fca571ca19f4aa99d`
+- v0.10.0: `fd8602252a130836d0be309e0fdd2bb72741cc92e4346d2ce0e0a95980ae9361`
 - v0.9.2: `4142aead0eb700cfe8871e1a0c16e20fdea0249599574ffc0cff3624bd2c778f`
 - v0.9.1: `73694f9a4912344457f1c6ae19aaa788131e551c9781554663c3411ce86da6bc`
 - v0.9.0: `f9dd33fa19b3be5245ac96c5464b2d1fb6506f87696e272a8264ae6726f09900`

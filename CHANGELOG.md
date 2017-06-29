@@ -11,6 +11,10 @@ Possible log types:
 - `[fixed]` for any bug fixes.
 - `[security]` to invite users to upgrade in case of vulnerabilities.
 
+### v0.11.0 (2017-06-29)
+
+- [changed] Update libjingle builds (commit e0eb35dd5387422716020cfdaf0d477b63441c91)
+
 ### v0.10.0 (2017-04-03)
 
 - [changed] Update saltyrtc-client to v0.10.+
