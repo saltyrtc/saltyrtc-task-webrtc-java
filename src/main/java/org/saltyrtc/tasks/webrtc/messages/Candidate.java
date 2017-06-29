@@ -16,11 +16,11 @@ import org.saltyrtc.client.annotations.Nullable;
  */
 class Candidate {
     @NonNull
-    private String candidate;
+    private final String candidate;
     @Nullable
-    private String sdpMid;
+    private final String sdpMid;
     @Nullable
-    private Integer sdpMLineIndex;
+    private final Integer sdpMLineIndex;
 
     public Candidate(@NonNull String candidate, @Nullable String sdpMid, @Nullable Integer sdpMLineIndex) {
         this.candidate = candidate;

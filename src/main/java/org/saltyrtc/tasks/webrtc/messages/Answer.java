@@ -18,7 +18,7 @@ import java.util.Map;
 
 public class Answer implements ToTaskMessage {
 
-    public static String TYPE = "answer";
+    public static final String TYPE = "answer";
 
     private String sdp;
 

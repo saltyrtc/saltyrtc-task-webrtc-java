@@ -71,7 +71,7 @@ public class WebRTCTask implements Task {
 
     // Exclude list
     @NonNull
-    private Set<Integer> exclude = new HashSet<>();
+    private final Set<Integer> exclude = new HashSet<>();
     @Nullable
     private Integer dcId = null;
 

@@ -20,11 +20,11 @@ import java.util.Map;
 
 public class Candidates implements ToTaskMessage {
 
-    public static String TYPE = "candidates";
-    private static String FIELD_CANDIDATES = "candidates";
-    private static String FIELD_CANDIDATE = "candidate";
-    private static String FIELD_SDP_MID = "sdpMid";
-    private static String FIELD_SDP_M_LINE_INDEX = "sdpMLineIndex";
+    public static final String TYPE = "candidates";
+    private static final String FIELD_CANDIDATES = "candidates";
+    private static final String FIELD_CANDIDATE = "candidate";
+    private static final String FIELD_SDP_MID = "sdpMid";
+    private static final String FIELD_SDP_M_LINE_INDEX = "sdpMLineIndex";
 
     private Candidate[] candidates;
 

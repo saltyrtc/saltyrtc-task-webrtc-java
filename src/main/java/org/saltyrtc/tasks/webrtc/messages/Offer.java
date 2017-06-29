@@ -18,7 +18,7 @@ import java.util.Map;
 
 public class Offer implements ToTaskMessage {
 
-    public static String TYPE = "offer";
+    public static final String TYPE = "offer";
 
     private String sdp;
 

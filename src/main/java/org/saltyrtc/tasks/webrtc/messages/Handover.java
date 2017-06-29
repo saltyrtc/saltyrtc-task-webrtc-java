@@ -14,7 +14,7 @@ import java.util.HashMap;
 
 public class Handover implements ToTaskMessage {
 
-    public static String TYPE = "handover";
+    public static final String TYPE = "handover";
 
     @Override
     public TaskMessage toTaskMessage() {
