@@ -496,9 +496,11 @@ public class WebRTCTask implements Task {
      */
     @Override
     public void close(int reason) {
-        if(this.sdc != null) {
+        if (this.sdc != null) {
             this.getLogger().debug("Closing signaling data channel: " + CloseCode.explain(reason));
             this.sdc.close();
+            this.sdc.dispose();
+            this.sdc = null;
         }
     }
 }
