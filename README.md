@@ -29,7 +29,7 @@ based on commit `ed01647ea97dbe0ea25ab915237e39143b1978d7` from `2017-02-02
 Gradle:
 
 ```groovy
-compile 'org.saltyrtc.tasks.webrtc:saltyrtc-task-webrtc:0.11.0'
+compile 'org.saltyrtc.tasks.webrtc:saltyrtc-task-webrtc:0.12.0'
 ```
 
 Maven:
@@ -38,7 +38,7 @@ Maven:
 <dependency>
   <groupId>org.saltyrtc.tasks.webrtc</groupId>
   <artifactId>saltyrtc-task-webrtc</artifactId>
-  <version>0.11.0</version>
+  <version>0.12.0</version>
   <type>pom</type>
 </dependency>
 ```
@@ -128,6 +128,7 @@ Include it in your project like this:
 
 These are the SHA256 hashes for the published releases of this project:
 
+- v0.12.0: `cb4d4a6c9e46e9d82f9a5f3c94b8767bd5d2cd0b106869c3faf6e2d226ef64e5`
 - v0.11.0: `b4161390b63a0e9166e9991357e57c4a28a1f452f378af0fca571ca19f4aa99d`
 - v0.10.0: `fd8602252a130836d0be309e0fdd2bb72741cc92e4346d2ce0e0a95980ae9361`
 - v0.9.2: `4142aead0eb700cfe8871e1a0c16e20fdea0249599574ffc0cff3624bd2c778f`

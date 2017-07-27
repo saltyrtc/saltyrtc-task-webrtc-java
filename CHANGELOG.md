@@ -11,6 +11,11 @@ Possible log types:
 - `[fixed]` for any bug fixes.
 - `[security]` to invite users to upgrade in case of vulnerabilities.
 
+### v0.12.0 (2017-07-27)
+
+- [changed] Update libjingle builds (commit 9c0914f93801eb0c081ae733bd744290e17e5bef)
+- [changed] Explicitly dispose data channel after closing
+
 ### v0.11.0 (2017-06-29)
 
 - [changed] Update libjingle builds (commit e0eb35dd5387422716020cfdaf0d477b63441c91)
