@@ -11,6 +11,11 @@ Possible log types:
 - `[fixed]` for any bug fixes.
 - `[security]` to invite users to upgrade in case of vulnerabilities.
 
+### v0.13.0 (2018-02-13)
+
+- [changed] Update libjingle builds (commit f7f8cb979b71d14daac57ef9dec4a583e99902b2)
+- [changed] Use Java 8
+
 ### v0.12.0 (2017-07-27)
 
 - [changed] Update libjingle builds (commit 9c0914f93801eb0c081ae733bd744290e17e5bef)
