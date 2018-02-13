@@ -49,6 +49,10 @@ android {
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/LICENSE'
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 // In this section you declare where to find the dependencies of your project
@@ -65,22 +69,17 @@ dependencies {
         exclude module: 'msgpack-core'
         exclude module: 'jackson-dataformat-msgpack'
     }
-
     // The production code uses the SLF4J logging API at compile time
     compile 'org.slf4j:slf4j-api:1.7.24'
-
     // WebRTC RTCPeerConnection
     compile files('libs/base_java.jar')
     compile files('libs/audio_device_java.jar')
     compile files('libs/libjingle_peerconnection_java.jar')
-
     // Dependency: Msgpack serialization
     compile 'org.msgpack:msgpack-core:0.8.12'
     compile 'org.msgpack:jackson-dataformat-msgpack:0.8.12'
-
     // Dependency: Binary chunking
     compile 'org.saltyrtc.chunked-dc:chunked-dc:1.0.+'
-
     // Test dependencies
     testCompile 'org.slf4j:slf4j-simple:1.7.21'
     testCompile 'junit:junit:4.12'

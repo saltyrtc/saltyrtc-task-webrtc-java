@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2017 Threema GmbH
+ * Copyright (c) 2016-2018 Threema GmbH
  *
  * Licensed under the Apache License, Version 2.0, <see LICENSE-APACHE file>
  * or the MIT license <see LICENSE-MIT file>, at your option. This file may not be
@@ -35,6 +35,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Unfortunately, the `DataChannel` class does not provide an interface that we could implement.
  * https://bugs.chromium.org/p/webrtc/issues/detail?id=6221
  */
+@SuppressWarnings("unused")
 public class SecureDataChannel {
 
     // Logger
@@ -72,12 +73,7 @@ public class SecureDataChannel {
         this.csnPair = new CombinedSequencePair();
 
         // Register a message listener for the unchunker
-        this.unchunker.onMessage(new Unchunker.MessageListener() {
-            @Override
-            public void onMessage(ByteBuffer buffer) {
-                SecureDataChannel.this.onMessage(buffer);
-            }
-        });
+        this.unchunker.onMessage(SecureDataChannel.this::onMessage);
     }
 
     /**

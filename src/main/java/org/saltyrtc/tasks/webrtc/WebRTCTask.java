@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2017 Threema GmbH
+ * Copyright (c) 2016-2018 Threema GmbH
  *
  * Licensed under the Apache License, Version 2.0, <see LICENSE-APACHE file>
  * or the MIT license <see LICENSE-MIT file>, at your option. This file may not be
@@ -52,6 +52,7 @@ import java.util.Set;
  *
  * To send offer/answer/candidates, use the corresponding public methods on this task.
  */
+@SuppressWarnings("unused")
 public class WebRTCTask implements Task {
 
     // Constants as defined by the specification

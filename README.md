@@ -6,7 +6,7 @@
 
 This is a [SaltyRTC](https://github.com/saltyrtc/saltyrtc-meta) [WebRTC
 task](https://github.com/saltyrtc/saltyrtc-meta/blob/master/Task-WebRTC.md)
-implementation for Java 7+.
+implementation for Java 8+.
 
 For now, as long as `RTCPeerConnection` only works on Android, this library
 will not work outside of projects.
@@ -153,7 +153,7 @@ your application always gets the correct version of this library.
 
 ## License
 
-    Copyright (c) 2016-2017 Threema GmbH
+    Copyright (c) 2016-2018 Threema GmbH
 
     Licensed under the Apache License, Version 2.0, <see LICENSE-APACHE file>
     or the MIT license <see LICENSE-MIT file>, at your option. This file may not be
