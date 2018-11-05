@@ -8,7 +8,6 @@
 
 package org.saltyrtc.tasks.webrtc.integration;
 
-import android.content.Context;
 import android.support.test.filters.LargeTest;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -28,7 +27,6 @@ import org.saltyrtc.tasks.webrtc.SSLContextHelper;
 import org.saltyrtc.tasks.webrtc.WebRTCTask;
 import org.webrtc.DataChannel;
 import org.webrtc.IceCandidate;
-import org.webrtc.MediaConstraints;
 import org.webrtc.MediaStream;
 import org.webrtc.PeerConnection;
 import org.webrtc.PeerConnectionFactory;
@@ -99,21 +97,22 @@ public class ConnectionTest {
     }
 
     private PeerConnection createPeerConnection() {
-        // Initialize Android globals
-        // See https://bugs.chromium.org/p/webrtc/issues/detail?id=3416
-        Context context = null;
-        final boolean ok = PeerConnectionFactory.initializeAndroidGlobals(context, true, true, false);
-        if (!ok) {
-            throw new RuntimeException("Could not initialize Android globals");
-        }
+        // Initialize
+        PeerConnectionFactory.initialize(
+            PeerConnectionFactory.InitializationOptions
+                .builder(null)
+                .setEnableInternalTracer(false)
+                .createInitializationOptions()
+        );
 
         // Create peer connection
         final PeerConnectionFactory.Options options = new PeerConnectionFactory.Options();
-        final PeerConnectionFactory factory = new PeerConnectionFactory(options);
-        final MediaConstraints constraints = new MediaConstraints();
+        final PeerConnectionFactory factory = PeerConnectionFactory
+            .builder()
+            .setOptions(options)
+            .createPeerConnectionFactory();
         return factory.createPeerConnection(
             new ArrayList<PeerConnection.IceServer>(),
-            constraints,
             new PeerConnectionObserver()
         );
     }

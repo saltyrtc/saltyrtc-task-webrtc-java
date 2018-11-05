@@ -12,8 +12,8 @@ package org.saltyrtc.tasks.webrtc;
  * Test configuration.
  */
 public class Config {
-    public static String SALTYRTC_HOST = "10.0.2.2";
-    public static int SALTYRTC_PORT = 8765;
+    public static String SALTYRTC_HOST = "server.saltyrtc.org";
+    public static int SALTYRTC_PORT = 9287;
     // Show debug output
     public static boolean DEBUG = true;
     // Show verbose output, e.g. websocket frames
