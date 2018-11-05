@@ -72,7 +72,7 @@ repositories {
 // In this section you declare the dependencies for your production and test code
 dependencies {
     // SaltyRTC
-    implementation('org.saltyrtc.client:saltyrtc-client:0.10.+') {
+    implementation('org.saltyrtc.client:saltyrtc-client:0.11.+') {
         exclude group: 'org.json'
         exclude module: 'msgpack-core'
         exclude module: 'jackson-dataformat-msgpack'
