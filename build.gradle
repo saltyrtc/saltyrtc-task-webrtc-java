@@ -7,7 +7,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.android.tools.build:gradle:3.1.0'
     }
 }
 
@@ -26,7 +26,7 @@ version = app_version
 // Android configuration
 android {
     compileSdkVersion 27
-    buildToolsVersion "27.0.2"
+    buildToolsVersion "27.0.3"
 
     defaultConfig {
         minSdkVersion 14
@@ -72,30 +72,30 @@ repositories {
 // In this section you declare the dependencies for your production and test code
 dependencies {
     // SaltyRTC
-    compile('org.saltyrtc.client:saltyrtc-client:0.10.+') {
+    implementation('org.saltyrtc.client:saltyrtc-client:0.10.+') {
         exclude group: 'org.json'
         exclude module: 'msgpack-core'
         exclude module: 'jackson-dataformat-msgpack'
     }
     // The production code uses the SLF4J logging API at compile time
-    compile 'org.slf4j:slf4j-api:1.7.24'
+    implementation 'org.slf4j:slf4j-api:1.7.24'
     // WebRTC RTCPeerConnection
-    compile files('libs/base_java.jar')
-    compile files('libs/audio_device_java.jar')
-    compile files('libs/libjingle_peerconnection_java.jar')
+    implementation files('libs/base_java.jar')
+    implementation files('libs/audio_device_java.jar')
+    implementation files('libs/libjingle_peerconnection_java.jar')
     // Dependency: Msgpack serialization
-    compile 'org.msgpack:msgpack-core:0.8.12'
-    compile 'org.msgpack:jackson-dataformat-msgpack:0.8.12'
+    implementation 'org.msgpack:msgpack-core:0.8.12'
+    implementation 'org.msgpack:jackson-dataformat-msgpack:0.8.12'
     // Dependency: Binary chunking
-    compile 'org.saltyrtc.chunked-dc:chunked-dc:1.0.+'
+    implementation 'org.saltyrtc.chunked-dc:chunked-dc:1.0.+'
     // Test dependencies
-    testCompile 'org.slf4j:slf4j-simple:1.7.21'
-    testCompile 'junit:junit:4.12'
-    androidTestCompile 'com.android.support:support-annotations:27.0.2'
-    androidTestCompile 'com.android.support.test:runner:1.0.1'
-    androidTestCompile 'com.android.support.test:rules:1.0.1'
-    androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
-    androidTestCompile 'com.noveogroup.android:android-logger:1.3.1'
+    testImplementation 'org.slf4j:slf4j-simple:1.7.21'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support:support-annotations:27.0.2'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test:rules:1.0.1'
+    androidTestImplementation 'org.hamcrest:hamcrest-library:1.3'
+    androidTestImplementation 'com.noveogroup.android:android-logger:1.3.1'
 }
 
 task androidJavadocs(type: Javadoc) {
