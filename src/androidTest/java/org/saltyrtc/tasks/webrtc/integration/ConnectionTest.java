@@ -112,7 +112,7 @@ public class ConnectionTest {
             .setOptions(options)
             .createPeerConnectionFactory();
         return factory.createPeerConnection(
-            new ArrayList<PeerConnection.IceServer>(),
+            new ArrayList<>(),
             new PeerConnectionObserver()
         );
     }
@@ -154,39 +154,35 @@ public class ConnectionTest {
         }
 
         // Register event handlers
-        this.initiator.events.signalingStateChanged.register(new EventHandler<SignalingStateChangedEvent>() {
-            @Override
-            public boolean handle(SignalingStateChangedEvent event) {
-                switch (event.getState()) {
-                    case TASK:
-                        eventsCalled.put("initiatorConnected", true);
-                        break;
-                    case ERROR:
-                        eventsCalled.put("initiatorError", true);
-                        break;
-                    case CLOSED:
-                        eventsCalled.put("initiatorClosed", true);
-                        break;
-                }
-                return false;
+        this.initiator.events.signalingStateChanged.register(event -> {
+            //noinspection EnumSwitchStatementWhichMissesCases
+            switch (event.getState()) {
+                case TASK:
+                    eventsCalled.put("initiatorConnected", true);
+                    break;
+                case ERROR:
+                    eventsCalled.put("initiatorError", true);
+                    break;
+                case CLOSED:
+                    eventsCalled.put("initiatorClosed", true);
+                    break;
             }
+            return false;
         });
-        this.responder.events.signalingStateChanged.register(new EventHandler<SignalingStateChangedEvent>() {
-            @Override
-            public boolean handle(SignalingStateChangedEvent event) {
-                switch (event.getState()) {
-                    case TASK:
-                        eventsCalled.put("responderConnected", true);
-                        break;
-                    case ERROR:
-                        eventsCalled.put("responderError", true);
-                        break;
-                    case CLOSED:
-                        eventsCalled.put("responderClosed", true);
-                        break;
-                }
-                return false;
+        this.responder.events.signalingStateChanged.register(event -> {
+            //noinspection EnumSwitchStatementWhichMissesCases
+            switch (event.getState()) {
+                case TASK:
+                    eventsCalled.put("responderConnected", true);
+                    break;
+                case ERROR:
+                    eventsCalled.put("responderError", true);
+                    break;
+                case CLOSED:
+                    eventsCalled.put("responderClosed", true);
+                    break;
             }
+            return false;
         });
     }
 
@@ -197,23 +193,17 @@ public class ConnectionTest {
 
         // Latches to test connection state
         final CountDownLatch connectedPeers = new CountDownLatch(2);
-        this.initiator.events.signalingStateChanged.register(new EventHandler<SignalingStateChangedEvent>() {
-            @Override
-            public boolean handle(SignalingStateChangedEvent event) {
-                if (event.getState() == SignalingState.TASK) {
-                    connectedPeers.countDown();
-                }
-                return false;
+        this.initiator.events.signalingStateChanged.register(event -> {
+            if (event.getState() == SignalingState.TASK) {
+                connectedPeers.countDown();
             }
+            return false;
         });
-        this.responder.events.signalingStateChanged.register(new EventHandler<SignalingStateChangedEvent>() {
-            @Override
-            public boolean handle(SignalingStateChangedEvent event) {
-                if (event.getState() == SignalingState.TASK) {
-                    connectedPeers.countDown();
-                }
-                return false;
+        this.responder.events.signalingStateChanged.register(event -> {
+            if (event.getState() == SignalingState.TASK) {
+                connectedPeers.countDown();
             }
+            return false;
         });
 
         // Connect server
@@ -242,23 +232,17 @@ public class ConnectionTest {
     public void testHandover() throws Exception {
         // Latches to test connection state
         final CountDownLatch connectedPeers = new CountDownLatch(2);
-        initiator.events.signalingStateChanged.register(new EventHandler<SignalingStateChangedEvent>() {
-            @Override
-            public boolean handle(SignalingStateChangedEvent event) {
-                if (event.getState() == SignalingState.TASK) {
-                    connectedPeers.countDown();
-                }
-                return false;
+        initiator.events.signalingStateChanged.register(event -> {
+            if (event.getState() == SignalingState.TASK) {
+                connectedPeers.countDown();
             }
+            return false;
         });
-        responder.events.signalingStateChanged.register(new EventHandler<SignalingStateChangedEvent>() {
-            @Override
-            public boolean handle(SignalingStateChangedEvent event) {
-                if (event.getState() == SignalingState.TASK) {
-                    connectedPeers.countDown();
-                }
-                return false;
+        responder.events.signalingStateChanged.register(event -> {
+            if (event.getState() == SignalingState.TASK) {
+                connectedPeers.countDown();
             }
+            return false;
         });
 
         // Connect server
