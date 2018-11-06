@@ -11,6 +11,11 @@ Possible log types:
 - `[fixed]` for any bug fixes.
 - `[security]` to invite users to upgrade in case of vulnerabilities.
 
+### v0.14.0 (2018-11-06)
+
+- [changed] Update libwebrtc builds to M71 (#20)
+- [changed] Update gradle and build tools (#21)
+
 ### v0.13.0 (2018-02-13)
 
 - [changed] Update libjingle builds (commit f7f8cb979b71d14daac57ef9dec4a583e99902b2)
