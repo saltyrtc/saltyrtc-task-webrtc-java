@@ -79,10 +79,8 @@ dependencies {
     }
     // The production code uses the SLF4J logging API at compile time
     implementation 'org.slf4j:slf4j-api:1.7.24'
-    // WebRTC RTCPeerConnection
-    implementation files('libs/base_java.jar')
-    implementation files('libs/audio_device_java.jar')
-    implementation files('libs/libjingle_peerconnection_java.jar')
+    // LibWebRTC
+    implementation files('libs/libwebrtc.jar')
     // Dependency: Msgpack serialization
     implementation 'org.msgpack:msgpack-core:0.8.12'
     implementation 'org.msgpack:jackson-dataformat-msgpack:0.8.12'
