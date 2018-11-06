@@ -78,20 +78,20 @@ dependencies {
         exclude module: 'jackson-dataformat-msgpack'
     }
     // The production code uses the SLF4J logging API at compile time
-    implementation 'org.slf4j:slf4j-api:1.7.24'
+    implementation 'org.slf4j:slf4j-api:1.7.25'
     // LibWebRTC
     implementation files('libs/libwebrtc.jar')
     // Dependency: Msgpack serialization
-    implementation 'org.msgpack:msgpack-core:0.8.12'
-    implementation 'org.msgpack:jackson-dataformat-msgpack:0.8.12'
+    implementation 'org.msgpack:msgpack-core:0.8.16'
+    implementation 'org.msgpack:jackson-dataformat-msgpack:0.8.16'
     // Dependency: Binary chunking
     implementation 'org.saltyrtc.chunked-dc:chunked-dc:1.0.+'
     // Test dependencies
-    testImplementation 'org.slf4j:slf4j-simple:1.7.21'
+    testImplementation 'org.slf4j:slf4j-simple:1.7.25'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support:support-annotations:27.0.2'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test:rules:1.0.1'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
     androidTestImplementation 'org.hamcrest:hamcrest-library:1.3'
     androidTestImplementation 'com.noveogroup.android:android-logger:1.3.1'
 }
