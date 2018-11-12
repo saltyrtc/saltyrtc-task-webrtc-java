@@ -424,7 +424,7 @@ public class WebRTCTask implements Task {
                 // the SecureDataChannel instance may be null.
                 // In that case, ignore the state change.
                 if (sdc == null) {
-                    logger.warn("DataChannel: onStateChange, but data channel is null");
+                    logger.debug("DataChannel: onStateChange, but data channel is null");
                     return;
                 }
 
