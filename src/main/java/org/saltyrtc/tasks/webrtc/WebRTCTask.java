@@ -424,7 +424,7 @@ public class WebRTCTask implements Task {
                 // the SecureDataChannel instance may be null.
                 // In that case, ignore the state change.
                 if (sdc == null) {
-                    logger.debug("DataChannel: onStateChange, but data channel is null");
+                    logger.warn("DataChannel: onStateChange, but data channel is null");
                     return;
                 }
 
@@ -507,6 +507,7 @@ public class WebRTCTask implements Task {
         if (this.sdc != null) {
             this.getLogger().debug("Closing signaling data channel: " + CloseCode.explain(reason));
             this.sdc.close();
+            this.sdc.unregisterObserver();
             this.sdc.dispose();
             this.sdc = null;
             this.signaling.setState(SignalingState.CLOSED);
