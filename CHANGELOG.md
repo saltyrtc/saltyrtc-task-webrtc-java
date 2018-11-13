@@ -11,6 +11,10 @@ Possible log types:
 - `[fixed]` for any bug fixes.
 - `[security]` to invite users to upgrade in case of vulnerabilities.
 
+### v0.14.1 (2018-11-13)
+
+- [fixed] Prevent NullPointerException in data channel observer (#23)
+
 ### v0.14.0 (2018-11-06)
 
 - [changed] Update libwebrtc builds to M71 (#20)
