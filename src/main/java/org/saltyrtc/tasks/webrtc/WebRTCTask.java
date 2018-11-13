@@ -54,7 +54,6 @@ import java.util.Set;
  */
 @SuppressWarnings("unused")
 public class WebRTCTask implements Task {
-
     // Constants as defined by the specification
     private static final String PROTOCOL_NAME = "v0.webrtc.tasks.saltyrtc.org";
     private static final Integer DEFAULT_MAX_PACKET_SIZE = 16384;
@@ -421,6 +420,14 @@ public class WebRTCTask implements Task {
                 final SignalingInterface signaling = WebRTCTask.this.signaling;
                 final SecureDataChannel sdc = WebRTCTask.this.sdc;
 
+                // When the close() method is called before this state change callback is triggered,
+                // the SecureDataChannel instance may be null.
+                // In that case, ignore the state change.
+                if (sdc == null) {
+                    logger.warn("DataChannel: onStateChange, but data channel is null");
+                    return;
+                }
+
                 logger.info("DataChannel: State changed to " + sdc.state());
                 switch (sdc.state()) {
                     case CONNECTING:
@@ -500,8 +507,10 @@ public class WebRTCTask implements Task {
         if (this.sdc != null) {
             this.getLogger().debug("Closing signaling data channel: " + CloseCode.explain(reason));
             this.sdc.close();
+            this.sdc.unregisterObserver();
             this.sdc.dispose();
             this.sdc = null;
+            this.signaling.setState(SignalingState.CLOSED);
         }
     }
 }
