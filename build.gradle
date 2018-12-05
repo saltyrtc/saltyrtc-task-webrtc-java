@@ -16,7 +16,7 @@ plugins {
     id 'com.jfrog.bintray' version '1.7'
 }
 
-def app_version = '0.14.1'
+def app_version = '0.15.0'
 
 apply plugin: 'com.android.library'
 apply plugin: 'maven'

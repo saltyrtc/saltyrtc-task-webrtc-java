@@ -11,6 +11,11 @@ Possible log types:
 - `[fixed]` for any bug fixes.
 - `[security]` to invite users to upgrade in case of vulnerabilities.
 
+### v0.15.0 (2018-12-05)
+
+- [changed] Upgrade saltyrtc-client to v0.12.+
+- [changed] Bump targetSdkVersion to 28
+
 ### v0.14.1 (2018-11-13)
 
 - [fixed] Prevent NullPointerException in data channel observer (#23)
