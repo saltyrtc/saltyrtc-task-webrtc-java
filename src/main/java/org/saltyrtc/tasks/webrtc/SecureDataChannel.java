@@ -13,7 +13,7 @@ import org.saltyrtc.chunkedDc.Unchunker;
 import org.saltyrtc.client.annotations.NonNull;
 import org.saltyrtc.client.annotations.Nullable;
 import org.saltyrtc.client.cookie.CookiePair;
-import org.saltyrtc.client.exceptions.CryptoFailedException;
+import org.saltyrtc.client.crypto.CryptoException;
 import org.saltyrtc.client.exceptions.OverflowException;
 import org.saltyrtc.client.exceptions.ProtocolException;
 import org.saltyrtc.client.exceptions.ValidationError;
@@ -148,7 +148,7 @@ public class SecureDataChannel {
         final byte[] data;
         try {
             data = this.task.getSignaling().decryptFromPeer(box);
-        } catch (CryptoFailedException e) {
+        } catch (CryptoException e) {
             LOG.error("Could not decrypt incoming data: ", e);
             return;
         }
@@ -176,7 +176,7 @@ public class SecureDataChannel {
         try {
             final byte[] data = buffer.data.array();
             box = this.encryptData(data);
-        } catch (CryptoFailedException e) {
+        } catch (CryptoException e) {
             LOG.error("Could not encrypt outgoing data: ", e);
             return false;
         } catch (OverflowException e) {
@@ -249,7 +249,7 @@ public class SecureDataChannel {
      * @return Encrypted box.
      */
     @Nullable
-    private Box encryptData(@NonNull byte[] data) throws CryptoFailedException, OverflowException {
+    private Box encryptData(@NonNull byte[] data) throws CryptoException, OverflowException {
         // Get next CSN
         final CombinedSequenceSnapshot csn = this.csnPair.getOurs().next();
 
