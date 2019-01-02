@@ -13,7 +13,7 @@ Possible log types:
 
 ### Unreleased
 
-- [changed] Update libwebrtc builds to M72
+- [changed] Update libwebrtc builds to M72 (#24)
 
 ### v0.15.0 (2018-12-05)
 
