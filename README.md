@@ -23,8 +23,7 @@ application](https://github.com/saltyrtc/saltyrtc-demo).
 The package is available [on
 Bintray](https://bintray.com/saltyrtc/maven/saltyrtc-client/). It includes the
 WebRTC PeerConnection build for the `armeabi-v7a` and `x86` architectures,
-based on commit `f7f8cb979b71d14daac57ef9dec4a583e99902b2` from `2018-02-12
-09:03:38 +0100`. The build was created using
+based on the release M72. The build was created using
 [webrtc-build-docker](https://github.com/threema-ch/webrtc-build-docker).
 
 Gradle:
