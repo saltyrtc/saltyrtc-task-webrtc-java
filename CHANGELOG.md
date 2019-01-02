@@ -11,6 +11,10 @@ Possible log types:
 - `[fixed]` for any bug fixes.
 - `[security]` to invite users to upgrade in case of vulnerabilities.
 
+### Unreleased
+
+- [changed] Update libwebrtc builds to M72
+
 ### v0.15.0 (2018-12-05)
 
 - [changed] Upgrade saltyrtc-client to v0.12.+
