@@ -29,7 +29,7 @@ based on the release M72. The build was created using
 Gradle:
 
 ```groovy
-compile 'org.saltyrtc.tasks.webrtc:saltyrtc-task-webrtc:0.15.0'
+compile 'org.saltyrtc.tasks.webrtc:saltyrtc-task-webrtc:0.16.0'
 ```
 
 Maven:
@@ -38,7 +38,7 @@ Maven:
 <dependency>
   <groupId>org.saltyrtc.tasks.webrtc</groupId>
   <artifactId>saltyrtc-task-webrtc</artifactId>
-  <version>0.15.0</version>
+  <version>0.16.0</version>
   <type>pom</type>
 </dependency>
 ```
@@ -128,6 +128,7 @@ Include it in your project like this:
 
 These are the SHA256 hashes for the published releases of this project:
 
+- v0.16.0: `0bffd6f38b348ae051c9ced7a7a11f2777eba427b1329eb5500166d1884af8f5`
 - v0.15.0: `f50d9e22e4bc7059cd2bc5547678aae8e1f2304fe05901bcb0dc0cd1d3d13991`
 - v0.14.1: `1c4c8ec94c3aab12d29bf842f23b7598286290d46e4aba76302e002cd96072c9`
 - v0.14.0: `f8cc8cc51dab11f263d07a1b23ad18e6f1b718387b646feebb447be3b0fee8e4`

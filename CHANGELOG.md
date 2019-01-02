@@ -11,7 +11,7 @@ Possible log types:
 - `[fixed]` for any bug fixes.
 - `[security]` to invite users to upgrade in case of vulnerabilities.
 
-### Unreleased
+### v0.16.0 (2019-01-02)
 
 - [changed] Update libwebrtc builds to M72 (#24)
 
