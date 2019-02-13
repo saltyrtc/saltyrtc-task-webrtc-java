@@ -11,7 +11,7 @@ Possible log types:
 - `[fixed]` for any bug fixes.
 - `[security]` to invite users to upgrade in case of vulnerabilities.
 
-### v0.16.1 (unreleased)
+### v0.16.1 (2019-02-13)
 
 - [changed] Add 64 bit versions of libwebrtc builds
 
