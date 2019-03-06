@@ -8,24 +8,27 @@
 
 package org.saltyrtc.tasks.webrtc.events;
 
-import org.webrtc.IceCandidate;
-import org.webrtc.SessionDescription;
-
-import java.util.List;
+import org.saltyrtc.client.annotations.NonNull;
+import org.saltyrtc.tasks.webrtc.messages.Answer;
+import org.saltyrtc.tasks.webrtc.messages.Candidate;
+import org.saltyrtc.tasks.webrtc.messages.Offer;
 
 public interface MessageHandler {
 	/**
      * Peer sends an offer.
      */
-    void onOffer(SessionDescription sd);
+    void onOffer(@NonNull Offer offer);
 
     /**
      * Peer sends an answer.
      */
-    void onAnswer(SessionDescription sd);
+    void onAnswer(@NonNull Answer answer);
 
 	/**
 	 * Peer sends ICE candidates.
+     *
+     * Important: While the array cannot be `null`, individual candidates can
+     *            be `null`!
      */
-    void onCandidates(List<IceCandidate> candidates);
+    void onCandidates(@NonNull Candidate[] candidates);
 }

@@ -8,83 +8,62 @@
 
 package org.saltyrtc.tasks.webrtc.messages;
 
+import org.saltyrtc.client.annotations.NonNull;
 import org.saltyrtc.client.exceptions.ValidationError;
 import org.saltyrtc.client.helpers.ValidationHelper;
 import org.saltyrtc.client.messages.c2c.TaskMessage;
-import org.webrtc.IceCandidate;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Candidates implements ToTaskMessage {
+    @NonNull private static final String TYPE = "candidates";
+    @NonNull private static final String FIELD_CANDIDATES = "candidates";
 
-    public static final String TYPE = "candidates";
-    private static final String FIELD_CANDIDATES = "candidates";
-    private static final String FIELD_CANDIDATE = "candidate";
-    private static final String FIELD_SDP_MID = "sdpMid";
-    private static final String FIELD_SDP_M_LINE_INDEX = "sdpMLineIndex";
+    @NonNull private final Candidate[] candidates;
 
-    private Candidate[] candidates;
-
-    public Candidates(Candidate[] candidates) {
+    public Candidates(@NonNull final Candidate[] candidates) {
         this.candidates = candidates;
-    }
-
-    public Candidates(IceCandidate[] candidates) {
-        this.candidates = new Candidate[candidates.length];
-        for (int i = 0; i < candidates.length; i++) {
-            final IceCandidate c = candidates[i];
-            this.candidates[i] = new Candidate(c.sdp, c.sdpMid, c.sdpMLineIndex);
-        }
     }
 
     /**
      * Construct candidates from the "data" field of a TaskMessage.
      */
-    public Candidates(Map<String, Object> map) throws ValidationError {
-        List<Map> candidates = ValidationHelper.validateTypedList(map.get(FIELD_CANDIDATES), Map.class, FIELD_CANDIDATES);
+    public Candidates(@NonNull final Map<String, Object> map) throws ValidationError {
+        final List<Map> candidates = ValidationHelper.validateTypedList(
+            map.get(FIELD_CANDIDATES), Map.class, FIELD_CANDIDATES, true);
         this.candidates = new Candidate[candidates.size()];
-        for (int i = 0; i < candidates.size(); i++) {
-            final Map candidateMap = candidates.get(i);
-            final String sdp = ValidationHelper.validateString(candidateMap.get(FIELD_CANDIDATE), FIELD_CANDIDATE);
-            String sdpMid = null;
-            if (candidateMap.get(FIELD_SDP_MID) != null) {
-                sdpMid = ValidationHelper.validateString(candidateMap.get(FIELD_SDP_MID), FIELD_SDP_MID);
-            }
-            Integer sdpMLineIndex = null;
-            if (candidateMap.get(FIELD_SDP_M_LINE_INDEX) != null) {
-                sdpMLineIndex = ValidationHelper.validateInteger(candidateMap.get(FIELD_SDP_M_LINE_INDEX), 0, 65535, FIELD_SDP_M_LINE_INDEX);
-            }
-            this.candidates[i] = new Candidate(sdp, sdpMid, sdpMLineIndex);
-        }
-    }
 
-    public Candidate[] getCandidates() {
-        return candidates;
+        // Validate and construct candidate instances
+        for (int i = 0; i < candidates.size(); i++) {
+            final Map candidateMapOrNull = candidates.get(i);
+            this.candidates[i] = candidateMapOrNull == null ? null : new Candidate(candidateMapOrNull);
+        }
     }
 
     @Override
-    public TaskMessage toTaskMessage() {
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof Candidates)) {
+            return false;
+        }
+        final Candidates other = (Candidates) obj;
+        return Objects.deepEquals(this.candidates, other.candidates);
+    }
+
+    @NonNull public Candidate[] getCandidates() {
+        return this.candidates;
+    }
+
+    @Override
+    @NonNull public TaskMessage toTaskMessage() {
         final Map<String, Object> data = new HashMap<>();
         final List<Map> candidateList = new ArrayList<>();
         for (Candidate candidate : this.candidates) {
-            final Map<Object, Object> candidateMap = new HashMap<>();
-            candidateMap.put(FIELD_CANDIDATE, candidate.getCandidate());
-            candidateMap.put(FIELD_SDP_MID, candidate.getSdpMid());
-            candidateMap.put(FIELD_SDP_M_LINE_INDEX, candidate.getSdpMLineIndex());
-            candidateList.add(candidateMap);
+            candidateList.add(candidate == null ? null : candidate.toMap());
         }
         data.put(FIELD_CANDIDATES, candidateList);
         return new TaskMessage(TYPE, data);
-    }
-
-    public List<IceCandidate> toIceCandidates() {
-        final List<IceCandidate> candidates = new ArrayList<>();
-        for (Candidate c : this.candidates) {
-            candidates.add(new IceCandidate(c.getSdpMid(), c.getSdpMLineIndex(), c.getCandidate()));
-        }
-        return candidates;
     }
 }

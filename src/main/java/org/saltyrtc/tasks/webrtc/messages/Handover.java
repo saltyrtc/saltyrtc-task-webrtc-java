@@ -8,16 +8,16 @@
 
 package org.saltyrtc.tasks.webrtc.messages;
 
+import org.saltyrtc.client.annotations.NonNull;
 import org.saltyrtc.client.messages.c2c.TaskMessage;
 
 import java.util.HashMap;
 
 public class Handover implements ToTaskMessage {
-
-    public static final String TYPE = "handover";
+    @NonNull private static final String TYPE = "handover";
 
     @Override
-    public TaskMessage toTaskMessage() {
+    @NonNull public TaskMessage toTaskMessage() {
         return new TaskMessage(TYPE, new HashMap<>());
     }
 }

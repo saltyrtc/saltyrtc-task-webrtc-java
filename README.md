@@ -21,10 +21,7 @@ application](https://github.com/saltyrtc/saltyrtc-demo).
 ## Installing
 
 The package is available [on
-Bintray](https://bintray.com/saltyrtc/maven/saltyrtc-client/). It includes the
-WebRTC PeerConnection build for the `arm`, `arm64`, `x86` and `x64`
-architectures, based on the release M72. The build was created using
-[webrtc-build-docker](https://github.com/threema-ch/webrtc-build-docker).
+Bintray](https://bintray.com/saltyrtc/maven/saltyrtc-client/).
 
 Gradle:
 

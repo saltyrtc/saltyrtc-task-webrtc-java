@@ -26,8 +26,7 @@ import java.nio.ByteBuffer;
  * - Q: Sequence number (4 byte)
  */
 public class DataChannelNonce extends Nonce {
-
-    private int channelId;
+    private final int channelId;
 
     /**
      * Create a new nonce.
@@ -94,8 +93,8 @@ public class DataChannelNonce extends Nonce {
      * A channel id should be an uint16.
      */
     private void validateChannelId(int channelId) {
-        if (channelId < 0 || channelId >= (1 << 16)) {
-            throw new IllegalArgumentException("channelId must be between 0 and 2**16-1");
+        if (channelId < 0 || channelId >= 65535) {
+            throw new IllegalArgumentException("channelId must be between 0 and 65534");
         }
     }
 
@@ -105,5 +104,4 @@ public class DataChannelNonce extends Nonce {
     public int getChannelId() {
         return this.channelId;
     }
-
 }

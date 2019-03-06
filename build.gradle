@@ -1,72 +1,33 @@
 buildscript {
     repositories {
         jcenter()
-        maven {
-            url 'https://maven.google.com/'
-            name 'Google'
-        }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.0'
     }
 }
 
 plugins {
-    id 'com.github.dcendents.android-maven' version '1.5'
+    // Base
+    id 'java'
+
+    // Publishing on bintray
+    id 'maven'
+    id 'maven-publish'
     id 'com.jfrog.bintray' version '1.7'
 }
 
+apply plugin: 'maven'
+
 def app_version = '0.16.1'
 
-apply plugin: 'com.android.library'
-apply plugin: 'maven'
-group = 'org.saltyrtc.tasks.webrtc'
-version = app_version
-
-// Android configuration
-android {
-    compileSdkVersion 27
-    buildToolsVersion "27.0.3"
-
-    defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-    lintOptions {
-        abortOnError false
-    }
-    sourceSets {
-        main {
-            jniLibs.srcDirs = ['libs']
-        }
-    }
-    packagingOptions {
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/LICENSE'
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-}
+// Java source & target version
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
 
 // In this section you declare where to find the dependencies of your project
 repositories {
     jcenter()
-    maven { url "http://dl.bintray.com/saltyrtc/maven" }
-    maven {
-        url 'https://maven.google.com/'
-        name 'Google'
-    }
+    maven { url "https://dl.bintray.com/terl/lazysodium-maven" }
 }
 
 // In this section you declare the dependencies for your production and test code
@@ -77,54 +38,82 @@ dependencies {
         exclude module: 'msgpack-core'
         exclude module: 'jackson-dataformat-msgpack'
     }
+
     // The production code uses the SLF4J logging API at compile time
     implementation 'org.slf4j:slf4j-api:1.7.25'
-    // LibWebRTC
-    implementation files('libs/libwebrtc.jar')
+
     // Dependency: Msgpack serialization
     implementation 'org.msgpack:msgpack-core:0.8.16'
     implementation 'org.msgpack:jackson-dataformat-msgpack:0.8.16'
+
     // Dependency: Binary chunking
     implementation 'org.saltyrtc.chunked-dc:chunked-dc:1.0.+'
+
     // Test dependencies
-    testImplementation 'org.slf4j:slf4j-simple:1.7.25'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support:support-annotations:27.0.2'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test:rules:1.0.2'
-    androidTestImplementation 'org.hamcrest:hamcrest-library:1.3'
-    androidTestImplementation 'com.noveogroup.android:android-logger:1.3.1'
+    testImplementation 'com.goterl.lazycode:lazysodium-java:3.3.0'
+    testImplementation 'org.slf4j:slf4j-simple:1.7.+'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.4.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.4.0'
 }
 
-task androidJavadocs(type: Javadoc) {
-    source = android.sourceSets.main.java.srcDirs
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+test {
+    // Enable JUnit 5 (Gradle 4.6+).
+    useJUnitPlatform()
+
+    // Always run tests, even when nothing changed.
+    dependsOn 'cleanTest'
+
+    // Show test results
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
 }
-task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
-    classifier = 'javadoc'
-    from androidJavadocs.destinationDir
-}
-task androidSourcesJar(type: Jar) {
+
+// Custom tasks for creating source/javadoc jars
+task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
-    from android.sourceSets.main.java.srcDirs
+    from sourceSets.main.allSource
+}
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
 }
 
+// Turn off linting for javadoc
+tasks.withType(Javadoc) {
+    options.addStringOption('Xdoclint:none', '-quiet')
+}
+
+// Add javadoc/source jar tasks as artifacts
 artifacts {
-    archives androidSourcesJar
-    archives androidJavadocsJar
+    archives sourcesJar, javadocJar
+}
+
+// Publishing
+publishing {
+    publications {
+        SaltyRTC(MavenPublication) {
+            from components.java
+            groupId 'org.saltyrtc.tasks.webrtc'
+            artifactId 'saltyrtc-task-webrtc'
+            version app_version
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
 }
 
 // Upload to Bintray
 bintray {
     user = System.getenv('BINTRAY_USER')
     key = System.getenv('BINTRAY_KEY')
-    configurations = ['archives']
+    publications = ['SaltyRTC']
     pkg {
         repo = 'maven'
         name = 'saltyrtc-task-webrtc'
         userOrg = 'saltyrtc'
         desc = 'WebRTC Task for SaltyRTC.'
-        websiteUrl = 'http://saltyrtc.org/'
+        websiteUrl = 'https://saltyrtc.org/'
         issueTrackerUrl = 'https://github.com/saltyrtc/saltyrtc-task-webrtc-java/issues'
         vcsUrl = 'https://github.com/saltyrtc/saltyrtc-task-webrtc-java.git'
         githubRepo = 'saltyrtc/saltyrtc-task-webrtc-java'
@@ -146,8 +135,9 @@ uploadArchives {
         mavenDeployer {
             repository(url: uri('/tmp/maven/'))
             pom.version = app_version
+            pom.groupId = 'org.saltyrtc.tasks.webrtc'
             pom.artifactId = 'saltyrtc-task-webrtc'
-            pom.packaging = 'aar'
         }
     }
 }
+
