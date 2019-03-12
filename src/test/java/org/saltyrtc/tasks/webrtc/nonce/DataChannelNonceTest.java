@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2017 Threema GmbH
+ * Copyright (c) 2016-2019 Threema GmbH
  *
  * Licensed under the Apache License, Version 2.0, <see LICENSE-APACHE file>
  * or the MIT license <see LICENSE-MIT file>, at your option. This file may not be
@@ -8,33 +8,33 @@
 
 package org.saltyrtc.tasks.webrtc.nonce;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.nio.ByteBuffer;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class DataChannelNonceTest {
-
+@DisplayName("nonce")
+class DataChannelNonceTest {
     private static byte[] cookie = new byte[DataChannelNonce.COOKIE_LENGTH];
 
-    @BeforeClass
-    public static void setUpStatic() {
+    @BeforeAll
+    static void setUpStatic() {
         for (int i = 0; i < DataChannelNonce.COOKIE_LENGTH; i++) {
-            cookie[i] = (byte)i;
+            cookie[i] = (byte) i;
         }
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testNonceCookieValidation() {
-        new DataChannelNonce(new byte[] { 0x00, 0x01, 0x02, 0x03 }, 0, 1, 0);
+    @Test
+    void testNonceCookieValidation() {
+        assertThrows(IllegalArgumentException.class, () ->
+            new DataChannelNonce(new byte[] { 0x00, 0x01, 0x02, 0x03 }, 0, 1, 0));
     }
 
     @Test
-    public void testNonceChannelValidation() {
+    void testNonceChannelValidation() {
         int[] invalid = new int[] { -1, 1 << 16 };
         int[] valid = new int[] { 0, 1 << 16 - 1 };
         for (int value : invalid) {
@@ -49,7 +49,7 @@ public class DataChannelNonceTest {
     }
 
     @Test
-    public void testNonceOverflowValidation() {
+    void testNonceOverflowValidation() {
         int[] invalid = new int[] { -1, 1 << 16 };
         int[] valid = new int[] { 0, 1 << 16 - 1 };
         for (int value : invalid) {
@@ -64,7 +64,7 @@ public class DataChannelNonceTest {
     }
 
     @Test
-    public void testNonceSequenceValidation() {
+    void testNonceSequenceValidation() {
         long[] invalid = new long[] { -1, 1L << 32 };
         long[] valid = new long[] { 0, 1L << 32 - 1 };
         for (long value : invalid) {
@@ -81,13 +81,14 @@ public class DataChannelNonceTest {
     /**
      * A nonce must be 24 bytes long.
      */
-    @Test(expected = IllegalArgumentException.class)
-    public void testNonceBytesValidation() {
-        new DataChannelNonce(ByteBuffer.wrap(new byte[] { 0x0 }));
+    @Test
+    void testNonceBytesValidation() {
+        assertThrows(IllegalArgumentException.class, () ->
+            new DataChannelNonce(ByteBuffer.wrap(new byte[] { 0x0 })));
     }
 
     @Test
-    public void testNonceBytesConstructor() {
+    void testNonceBytesConstructor() {
         byte[] bytes = new byte[] {
             // Cookie
             0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
@@ -106,14 +107,14 @@ public class DataChannelNonceTest {
     }
 
     @Test
-    public void testCombinedSequence() {
+    void testCombinedSequence() {
         final DataChannelNonce nonce = new DataChannelNonce(cookie, 0, 0x8000, 42L);
         // (0x8000 << 32) + 42 = 140737488355370
         assertEquals(140737488355370L, nonce.getCombinedSequence());
     }
 
     @Test
-    public void testByteConversionRoundtrip() {
+    void testByteConversionRoundtrip() {
         byte[] bytes = new byte[] {
             // Cookie
             0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
@@ -129,5 +130,4 @@ public class DataChannelNonceTest {
         byte[] bytesAgain = nonce.toBytes();
         assertArrayEquals(bytes, bytesAgain);
     }
-
 }
