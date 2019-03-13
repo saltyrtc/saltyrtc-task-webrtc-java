@@ -6,7 +6,7 @@
  * copied, modified, or distributed except according to those terms.
  */
 
-package org.saltyrtc.tasks.webrtc.transport;
+package org.saltyrtc.tasks.webrtc.tests.transport;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,6 +24,9 @@ import org.saltyrtc.tasks.webrtc.WebRTCTask;
 import org.saltyrtc.tasks.webrtc.WebRTCTaskVersion;
 import org.saltyrtc.tasks.webrtc.crypto.DataChannelCryptoContext;
 import org.saltyrtc.tasks.webrtc.exceptions.IllegalStateError;
+import org.saltyrtc.tasks.webrtc.transport.SignalingTransportHandler;
+import org.saltyrtc.tasks.webrtc.transport.SignalingTransport;
+import org.saltyrtc.tasks.webrtc.transport.SignalingTransportLink;
 import org.saltyrtc.tasks.webrtc.utils.NullHandler;
 import org.saltyrtc.tasks.webrtc.utils.NullSignaling;
 

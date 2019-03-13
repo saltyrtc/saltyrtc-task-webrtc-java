@@ -6,7 +6,7 @@
  * copied, modified, or distributed except according to those terms.
  */
 
-package org.saltyrtc.tasks.webrtc.nonce;
+package org.saltyrtc.tasks.webrtc.tests.nonce;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

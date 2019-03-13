@@ -6,7 +6,7 @@
  * copied, modified, or distributed except according to those terms.
  */
 
-package org.saltyrtc.tasks.webrtc.crypto;
+package org.saltyrtc.tasks.webrtc.tests.crypto;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,6 +26,7 @@ import org.saltyrtc.client.nonce.CombinedSequencePair;
 import org.saltyrtc.client.nonce.CombinedSequenceSnapshot;
 import org.saltyrtc.client.signaling.SignalingInterface;
 import org.saltyrtc.tasks.webrtc.DataChannelNonce;
+import org.saltyrtc.tasks.webrtc.crypto.DataChannelCryptoContext;
 import org.saltyrtc.tasks.webrtc.utils.NullSignaling;
 
 import java.nio.ByteBuffer;
