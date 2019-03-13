@@ -11,6 +11,7 @@ package org.saltyrtc.tasks.webrtc.nonce;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.saltyrtc.tasks.webrtc.DataChannelNonce;
 
 import java.nio.ByteBuffer;
 
@@ -18,8 +19,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("DataChannelNonce")
 class DataChannelNonceTest {
-    private static byte[] cookie = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
-    private static byte[] nonce = {
+    private static final byte[] cookie = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
+    private static final byte[] nonce = {
         // Cookie
         1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
         // Data channel: 4370

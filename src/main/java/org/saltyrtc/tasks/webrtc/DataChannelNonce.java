@@ -6,7 +6,7 @@
  * copied, modified, or distributed except according to those terms.
  */
 
-package org.saltyrtc.tasks.webrtc.nonce;
+package org.saltyrtc.tasks.webrtc;
 
 import org.saltyrtc.client.helpers.UnsignedHelper;
 import org.saltyrtc.client.nonce.Nonce;

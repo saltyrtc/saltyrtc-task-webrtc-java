@@ -23,7 +23,7 @@ import org.saltyrtc.client.signaling.state.SignalingState;
 import org.saltyrtc.tasks.webrtc.WebRTCTask;
 import org.saltyrtc.tasks.webrtc.crypto.DataChannelCryptoContext;
 import org.saltyrtc.tasks.webrtc.exceptions.IllegalStateError;
-import org.saltyrtc.tasks.webrtc.nonce.DataChannelNonce;
+import org.saltyrtc.tasks.webrtc.DataChannelNonce;
 import org.slf4j.Logger;
 
 import java.nio.ByteBuffer;

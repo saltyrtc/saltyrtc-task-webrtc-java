@@ -19,7 +19,7 @@ import org.saltyrtc.client.keystore.Box;
 import org.saltyrtc.client.nonce.CombinedSequencePair;
 import org.saltyrtc.client.nonce.CombinedSequenceSnapshot;
 import org.saltyrtc.client.signaling.SignalingInterface;
-import org.saltyrtc.tasks.webrtc.nonce.DataChannelNonce;
+import org.saltyrtc.tasks.webrtc.DataChannelNonce;
 
 import java.nio.ByteBuffer;
 
@@ -30,6 +30,7 @@ import java.nio.ByteBuffer;
  */
 public class DataChannelCryptoContext {
     @NonNull public static int OVERHEAD_LENGTH = 40;
+    @NonNull public static int NONCE_LENGTH = DataChannelNonce.TOTAL_LENGTH;
 
     // SaltyRTC
     private final int channelId;
@@ -97,7 +98,7 @@ public class DataChannelCryptoContext {
         // Note: This very loose check ensures that unreliable/unordered data
         //       channels do not break.
         if (this.lastIncomingCsn != null && nonce.getCombinedSequence() == this.lastIncomingCsn) {
-            throw new ValidationError("CSN reuse detected!");
+            throw new ValidationError("CSN reuse detected");
         }
 
         // Validate data channel id
