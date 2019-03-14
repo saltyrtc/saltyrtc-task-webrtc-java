@@ -19,7 +19,7 @@ import org.saltyrtc.client.signaling.state.HandoverState;
 import org.saltyrtc.client.signaling.state.SignalingState;
 
 /**
- * Allows to mock the signaling class.
+ * Implements the SignalingInterface and does nothing by default.
  */
 public class NullSignaling implements SignalingInterface {
     @Override

@@ -14,7 +14,8 @@ import org.saltyrtc.tasks.webrtc.transport.SignalingTransportHandler;
 import java.nio.ByteBuffer;
 
 /**
- * Allows to mock the handler class.
+ * Implements the ISignalingTransportHandler interface and does nothing by
+ * default.
  */
 public class NullHandler implements SignalingTransportHandler {
     @Override
