@@ -14,11 +14,11 @@ Update version numbers:
 Build:
 
     rm -r build
-    ./gradlew build
+    ./gradlew build publish
 
 Add hash to README.md:
 
-    sha256sum build/outputs/aar/saltyrtc-task-webrtc-release.aar
+    sha256sum build/libs/saltyrtc-task-webrtc.jar
 
 Add and commit:
 
@@ -32,4 +32,3 @@ Tag and push:
 
     git tag -s -u ${GPG_KEY} v${VERSION} -m "Version ${VERSION}"
     git push && git push --tags
-
