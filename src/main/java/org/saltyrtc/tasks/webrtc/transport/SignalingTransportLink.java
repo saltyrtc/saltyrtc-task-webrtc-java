@@ -10,7 +10,7 @@ package org.saltyrtc.tasks.webrtc.transport;
 
 import org.saltyrtc.client.annotations.NonNull;
 import org.saltyrtc.client.annotations.Nullable;
-import org.saltyrtc.tasks.webrtc.exceptions.IllegalStateError;
+import org.saltyrtc.tasks.webrtc.exceptions.UntiedException;
 
 import java.nio.ByteBuffer;
 
@@ -61,11 +61,11 @@ public class SignalingTransportLink  {
      * Must be called when the underlying data channel has moved into the
      * `closing` state.
      *
-     * @throws IllegalStateError in case it is not tied to a SignalingTransport.
+     * @throws UntiedException in case it is not tied to a SignalingTransport.
      */
-    public void closing() {
+    public void closing() throws UntiedException {
         if (this.transport == null) {
-            throw new IllegalStateError("Not tied to a SignalingTransport");
+            throw new UntiedException();
         }
         this.transport.closing();
     }
@@ -74,11 +74,11 @@ public class SignalingTransportLink  {
      * Must be called when the underlying data channel has moved into the
      * `closed` state.
      *
-     * @throws IllegalStateError in case it is not tied to a SignalingTransport.
+     * @throws UntiedException in case it is not tied to a SignalingTransport.
      */
-    public void closed() {
+    public void closed() throws UntiedException {
         if (this.transport == null) {
-            throw new IllegalStateError("Not tied to a SignalingTransport");
+            throw new UntiedException();
         }
         this.transport.closed();
     }
@@ -91,11 +91,11 @@ public class SignalingTransportLink  {
      *   modified by the application before dispatching it. The application
      *   MUST consider the message as transferred after calling this.
      *
-     * @throws IllegalStateError in case it is not tied to a SignalingTransport.
+     * @throws UntiedException in case it is not tied to a SignalingTransport.
      */
-    public void receive(@NonNull final ByteBuffer message) {
+    public void receive(@NonNull final ByteBuffer message) throws UntiedException {
         if (this.transport == null) {
-            throw new IllegalStateError("Not tied to a SignalingTransport");
+            throw new UntiedException();
         }
         this.transport.receiveChunk(message);
     }

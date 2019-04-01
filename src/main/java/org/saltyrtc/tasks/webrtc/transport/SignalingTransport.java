@@ -140,7 +140,6 @@ public class SignalingTransport {
         } catch (IllegalArgumentException error) {
             LOG.error("Invalid chunk:", error);
             this.die();
-            return;
         }
     }
 

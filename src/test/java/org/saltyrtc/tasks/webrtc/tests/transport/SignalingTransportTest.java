@@ -24,6 +24,7 @@ import org.saltyrtc.tasks.webrtc.WebRTCTask;
 import org.saltyrtc.tasks.webrtc.WebRTCTaskVersion;
 import org.saltyrtc.tasks.webrtc.crypto.DataChannelCryptoContext;
 import org.saltyrtc.tasks.webrtc.exceptions.IllegalStateError;
+import org.saltyrtc.tasks.webrtc.exceptions.UntiedException;
 import org.saltyrtc.tasks.webrtc.transport.SignalingTransportHandler;
 import org.saltyrtc.tasks.webrtc.transport.SignalingTransport;
 import org.saltyrtc.tasks.webrtc.transport.SignalingTransportLink;
@@ -153,7 +154,7 @@ class SignalingTransportTest {
 
     @Test
     @DisplayName("binds and forwards closing")
-    void testClosing() {
+    void testClosing() throws UntiedException {
         final NullHandler handler = new NullHandler();
         final TransportTuple tuple = this.createTransport(handler);
 
@@ -191,7 +192,7 @@ class SignalingTransportTest {
 
     @Test
     @DisplayName("binds, reassembles and decrypts a message")
-    void testReassemblesAndReceivesMessage() {
+    void testReassemblesAndReceivesMessage() throws UntiedException {
         final NullHandler handler = new NullHandler() {
             @Override
             public long getMaxMessageSize() {
@@ -254,12 +255,12 @@ class SignalingTransportTest {
         tuple.transport.send(MESSAGE);
 
         // Ensure untied
-        IllegalStateError error;
-        error = assertThrows(IllegalStateError.class, tuple.link::closing);
+        UntiedException error;
+        error = assertThrows(UntiedException.class, tuple.link::closing);
         assertEquals("Not tied to a SignalingTransport", error.getMessage());
-        error = assertThrows(IllegalStateError.class, tuple.link::closed);
+        error = assertThrows(UntiedException.class, tuple.link::closed);
         assertEquals("Not tied to a SignalingTransport", error.getMessage());
-        error = assertThrows(IllegalStateError.class, () -> tuple.link.receive(ByteBuffer.wrap(new byte [] {})));
+        error = assertThrows(UntiedException.class, () -> tuple.link.receive(ByteBuffer.wrap(new byte [] {})));
         assertEquals("Not tied to a SignalingTransport", error.getMessage());
     }
 

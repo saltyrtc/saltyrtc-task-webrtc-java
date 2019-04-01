@@ -1,6 +1,8 @@
 package org.saltyrtc.tasks.webrtc.utils;
 
 import org.saltyrtc.client.annotations.NonNull;
+import org.saltyrtc.tasks.webrtc.exceptions.IllegalStateError;
+import org.saltyrtc.tasks.webrtc.exceptions.UntiedException;
 import org.saltyrtc.tasks.webrtc.transport.SignalingTransportHandler;
 import org.saltyrtc.tasks.webrtc.transport.SignalingTransportLink;
 
@@ -17,23 +19,31 @@ public class SignalingLoopbackDataChannel extends LoopbackDataChannel<SignalingL
     @Override
     public void close() {
         if (this.closed) {
-            throw new RuntimeException("Already closed");
+            throw new IllegalStateError("Already closed");
         }
         if (this.remote == null) {
-            throw new RuntimeException("Loopback data channel not attached");
+            throw new IllegalStateError("Loopback data channel not attached");
         }
 
         // Move both into closing, then into closed
         this.closed = true;
-        this.link.closing();
         this.remote.closed = true;
-        this.remote.link.closing();
-        this.link.closed();
-        this.remote.link.closed();
+        try {
+            this.link.closing();
+            this.remote.link.closing();
+            this.link.closed();
+            this.remote.link.closed();
+        } catch (UntiedException error) {
+            throw new IllegalStateError(error.getMessage());
+        }
     }
 
     protected void receive(@NonNull final ByteBuffer message) {
         super.receive(message);
-        this.link.receive(message);
+        try {
+            this.link.receive(message);
+        } catch (UntiedException error) {
+            throw new IllegalStateError(error.getMessage());
+        }
     }
 }
