@@ -52,6 +52,11 @@ public class Candidates implements ToTaskMessage {
         return Objects.deepEquals(this.candidates, other.candidates);
     }
 
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(candidates);
+    }
+
     @NonNull public Candidate[] getCandidates() {
         return this.candidates;
     }

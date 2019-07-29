@@ -47,6 +47,11 @@ public class Offer implements ToTaskMessage {
         return Objects.equals(this.sdp, other.sdp);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(sdp);
+    }
+
     @NonNull public String getSdp() {
         return this.sdp;
     }

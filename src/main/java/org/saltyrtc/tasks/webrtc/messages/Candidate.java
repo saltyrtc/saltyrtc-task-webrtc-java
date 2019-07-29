@@ -66,6 +66,11 @@ public class Candidate {
             Objects.equals(this.sdpMLineIndex, other.sdpMLineIndex);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(sdp, sdpMid, sdpMLineIndex);
+    }
+
     @NonNull public String getSdp() {
         return this.sdp;
     }
