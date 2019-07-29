@@ -14,7 +14,7 @@ import org.saltyrtc.tasks.webrtc.messages.Candidate;
 import org.saltyrtc.tasks.webrtc.messages.Offer;
 
 public interface MessageHandler {
-	/**
+    /**
      * Peer sends an offer.
      */
     void onOffer(@NonNull Offer offer);
@@ -24,8 +24,8 @@ public interface MessageHandler {
      */
     void onAnswer(@NonNull Answer answer);
 
-	/**
-	 * Peer sends ICE candidates.
+    /**
+     * Peer sends ICE candidates.
      *
      * Important: While the array cannot be `null`, individual candidates can
      *            be `null`!

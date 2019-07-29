@@ -26,7 +26,7 @@ public class Offer implements ToTaskMessage {
         this.sdp = sdp;
     }
 
-	/**
+    /**
      * Construct an offer from the "data" field of a TaskMessage.
      */
     public Offer(@NonNull final Map<String, Object> map) throws ValidationError {
