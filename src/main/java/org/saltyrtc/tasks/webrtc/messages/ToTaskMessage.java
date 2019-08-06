@@ -8,11 +8,12 @@
 
 package org.saltyrtc.tasks.webrtc.messages;
 
+import org.saltyrtc.client.annotations.NonNull;
 import org.saltyrtc.client.messages.c2c.TaskMessage;
 
 /**
  * Interface for types that can be converted to a TaskMessage.
  */
 interface ToTaskMessage {
-    TaskMessage toTaskMessage();
+    @NonNull TaskMessage toTaskMessage();
 }

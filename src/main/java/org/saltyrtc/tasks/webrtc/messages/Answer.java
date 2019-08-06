@@ -8,29 +8,22 @@
 
 package org.saltyrtc.tasks.webrtc.messages;
 
+import org.saltyrtc.client.annotations.NonNull;
 import org.saltyrtc.client.exceptions.ValidationError;
 import org.saltyrtc.client.helpers.ValidationHelper;
 import org.saltyrtc.client.messages.c2c.TaskMessage;
-import org.webrtc.SessionDescription;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Answer implements ToTaskMessage {
+    @NonNull private static final String TYPE = "answer";
 
-    public static final String TYPE = "answer";
+    @NonNull private final String sdp;
 
-    private String sdp;
-
-    public Answer(String sdp) {
+    public Answer(@NonNull final String sdp) {
         this.sdp = sdp;
-    }
-
-    public Answer(SessionDescription sd) {
-        if (sd.type != SessionDescription.Type.ANSWER) {
-            throw new IllegalArgumentException("Session description is not an answer, but " + sd.type);
-        }
-        this.sdp = sd.description;
     }
 
     /**
@@ -42,21 +35,34 @@ public class Answer implements ToTaskMessage {
         this.sdp = ValidationHelper.validateString(answer.get("sdp"), "sdp");
     }
 
-    public String getSdp() {
-        return sdp;
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof Answer)) {
+            return false;
+        }
+        final Answer other = (Answer) obj;
+        return Objects.equals(this.sdp, other.sdp);
     }
 
     @Override
-    public TaskMessage toTaskMessage() {
+    public int hashCode() {
+        return Objects.hash(sdp);
+    }
+
+    @NonNull public String getSdp() {
+        return this.sdp;
+    }
+
+    @Override
+    @NonNull public TaskMessage toTaskMessage() {
         final Map<String, Object> answer = new HashMap<>();
         answer.put("type", TYPE);
         answer.put("sdp", this.sdp);
         final Map<String, Object> data = new HashMap<>();
         data.put("answer", answer);
         return new TaskMessage(TYPE, data);
-    }
-
-    public SessionDescription toSessionDescription() {
-        return new SessionDescription(SessionDescription.Type.ANSWER, this.getSdp());
     }
 }

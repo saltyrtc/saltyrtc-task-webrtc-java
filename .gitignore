@@ -11,6 +11,7 @@ local.properties
 
 # Java
 build/
+out/
 
 # Server
 saltyrtc-server-python/
