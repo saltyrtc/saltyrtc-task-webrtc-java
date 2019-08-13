@@ -13,12 +13,12 @@ plugins {
     // Publishing on bintray
     id 'maven'
     id 'maven-publish'
-    id 'com.jfrog.bintray' version '1.7'
+    id 'com.jfrog.bintray' version '1.8.4'
 }
 
 apply plugin: 'maven'
 
-def app_version = '0.16.1'
+def app_version = '0.17.0'
 
 // Java source & target version
 sourceCompatibility = '1.8'

@@ -11,6 +11,11 @@ Possible log types:
 - `[fixed]` for any bug fixes.
 - `[security]` to invite users to upgrade in case of vulnerabilities.
 
+### v0.17.0 (2019-08-13)
+
+- [changed] Use interfaces for the data flow between the task and a WebRTC implementation (#27)
+- [removed] Dependency to libwebrtc
+
 ### v0.16.1 (2019-02-13)
 
 - [changed] Add 64 bit versions of libwebrtc builds

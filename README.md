@@ -21,7 +21,7 @@ Bintray](https://bintray.com/saltyrtc/maven/saltyrtc-task-webrtc).
 Gradle:
 
 ```groovy
-compile 'org.saltyrtc.tasks.webrtc:saltyrtc-task-webrtc:0.16.1'
+compile 'org.saltyrtc.tasks.webrtc:saltyrtc-task-webrtc:0.17.0'
 ```
 
 Maven:
@@ -30,7 +30,7 @@ Maven:
 <dependency>
   <groupId>org.saltyrtc.tasks.webrtc</groupId>
   <artifactId>saltyrtc-task-webrtc</artifactId>
-  <version>0.16.1</version>
+  <version>0.17.0</version>
   <type>pom</type>
 </dependency>
 ```
@@ -290,6 +290,7 @@ current directory, run the tests:
 
 These are the SHA256 hashes for the published releases of this project:
 
+- v0.17.0: `97b052618be3ac970d359a99ebc4134e78dad9e5f87be4939394b271aca501ce`
 - v0.16.1: `af6878a27761624962ab6bc45eedf7b2f5196036d1cf5dcd69fe5724737a2d59`
 - v0.16.0: `0bffd6f38b348ae051c9ced7a7a11f2777eba427b1329eb5500166d1884af8f5`
 - v0.15.0: `f50d9e22e4bc7059cd2bc5547678aae8e1f2304fe05901bcb0dc0cd1d3d13991`
