@@ -3,6 +3,7 @@ buildscript {
         jcenter()
     }
     dependencies {
+        classpath 'org.owasp:dependency-check-gradle:5.3.2'
     }
 }
 
@@ -17,6 +18,7 @@ plugins {
 }
 
 apply plugin: 'maven'
+apply plugin: 'org.owasp.dependencycheck'
 
 def app_version = '0.17.0'
 
@@ -33,18 +35,23 @@ repositories {
 // In this section you declare the dependencies for your production and test code
 dependencies {
     // SaltyRTC
-    implementation('org.saltyrtc.client:saltyrtc-client:0.12.+') {
+    implementation('org.saltyrtc.client:saltyrtc-client:0.14.+') {
         exclude group: 'org.json'
         exclude module: 'msgpack-core'
         exclude module: 'jackson-dataformat-msgpack'
     }
 
     // The production code uses the SLF4J logging API at compile time
-    implementation 'org.slf4j:slf4j-api:1.7.25'
+    implementation 'org.slf4j:slf4j-api:1.7.30'
 
     // Dependency: Msgpack serialization
-    implementation 'org.msgpack:msgpack-core:0.8.16'
-    implementation 'org.msgpack:jackson-dataformat-msgpack:0.8.16'
+    implementation 'org.msgpack:msgpack-core:0.8.+'
+    implementation 'org.msgpack:jackson-dataformat-msgpack:0.8.+'
+
+    // Override some jackson-dataformat-msgpack 2.9 dependencies due to security vulnerabilities
+    implementation ('com.fasterxml.jackson.core:jackson-databind:2.10.+') {
+        force = true
+    }
 
     // Dependency: Binary chunking
     implementation 'org.saltyrtc.chunked-dc:chunked-dc:1.0.+'
@@ -141,3 +148,7 @@ uploadArchives {
     }
 }
 
+dependencyCheck {
+    skipConfigurations += 'lintClassPath'
+    failBuildOnCVSS 0
+}
