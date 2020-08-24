@@ -42,7 +42,7 @@ dependencies {
     }
 
     // The production code uses the SLF4J logging API at compile time
-    implementation 'org.slf4j:slf4j-api:1.7.25'
+    implementation 'org.slf4j:slf4j-api:1.7.30'
 
     // Dependency: Msgpack serialization
     implementation 'org.msgpack:msgpack-core:0.8.+'
