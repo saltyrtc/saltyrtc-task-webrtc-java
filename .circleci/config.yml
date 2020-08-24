@@ -12,14 +12,14 @@ references:
     # Handle dependencies
     - restore_cache:
         keys:
-          - v1-dependencies-{{ checksum "build.gradle" }}
-          - v1-dependencies-
+          - v2-dependencies-{{ checksum "build.gradle" }}
+          - v2-dependencies-
     - run: ./gradlew dependencies
     - save_cache:
         paths:
           - ~/.m2
           - ~/.gradle
-        key: v1-dependencies-{{ checksum "build.gradle" }}
+        key: v2-dependencies-{{ checksum "build.gradle" }}
 
     # Create JKS keystore
     - run: keytool -import -trustcacerts -alias root -file /saltyrtc/certs/saltyrtc.crt -keystore saltyrtc.jks -storetype JKS -storepass saltyrtc -noprompt
