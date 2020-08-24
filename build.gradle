@@ -20,7 +20,7 @@ plugins {
 apply plugin: 'maven'
 apply plugin: 'org.owasp.dependencycheck'
 
-def app_version = '0.17.0'
+def app_version = '0.18.0'
 
 // Java source & target version
 sourceCompatibility = '1.8'

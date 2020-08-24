@@ -11,6 +11,13 @@ Possible log types:
 - `[fixed]` for any bug fixes.
 - `[security]` to invite users to upgrade in case of vulnerabilities.
 
+### v0.18.0 (2020-08-24)
+
+- [changed] Upgrade saltyrtc-client dependency to 0.14
+- [changed] Upgrade other dependencies
+- [security] Added a dependency version override for jackson-databind which had
+  some CVEs reported against the previously used version
+
 ### v0.17.0 (2019-08-13)
 
 - [changed] Use interfaces for the data flow between the task and a WebRTC implementation (#27)
