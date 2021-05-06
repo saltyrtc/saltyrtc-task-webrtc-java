@@ -3,9 +3,10 @@
 Set variables:
 
     export VERSION=X.Y.Z
-    export GPG_KEY=E7ADD9914E260E8B35DFB50665FDE935573ACDA6
-    export BINTRAY_USER=...
-    export BINTRAY_KEY=...
+    export GPG_KEY=$(grep signing.gnupg.keyName gradle.properties | sed 's/signing.gnupg.keyName=//')
+
+Ensure that `ossrhUsername` and `ossrhPassword` are defined in your
+`~/.gradle/gradle.properties` file.
 
 Update version numbers:
 
@@ -13,20 +14,20 @@ Update version numbers:
 
 Build:
 
-    rm -r build
-    ./gradlew build publish
-
-Add hash to README.md:
-
-    sha256sum build/libs/saltyrtc-task-webrtc.jar
+    ./gradlew clean build
 
 Add and commit:
 
     git commit -S${GPG_KEY} -m "Release v${VERSION}"
 
-Publish the library to Bintray:
+Publish the library to Sonatype OSS / Maven Central:
 
-    ./gradlew bintrayUpload
+    ./gradlew publish
+
+Afterwards, go to https://s01.oss.sonatype.org/#stagingRepositories and:
+
+- Close the repository
+- Release the repository
 
 Tag and push:
 
