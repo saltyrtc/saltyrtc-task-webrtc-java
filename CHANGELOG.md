@@ -11,6 +11,13 @@ Possible log types:
 - `[fixed]` for any bug fixes.
 - `[security]` to invite users to upgrade in case of vulnerabilities.
 
+### v0.18.1 (2021-05-06)
+
+- [changed] Drop dependency on JCenter
+- [changed] Publish to Maven Central instead of JCenter
+- [changed] Require at least jackson-dataformat-msgpack 0.8.22
+- [changed] Require at least jackson-databind 2.12
+
 ### v0.18.0 (2020-08-24)
 
 - [changed] Upgrade saltyrtc-client dependency to 0.14

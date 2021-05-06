@@ -20,7 +20,7 @@ The package is available on Maven Central.
 Gradle:
 
 ```groovy
-compile 'org.saltyrtc:saltyrtc-task-webrtc:0.18.0'
+compile 'org.saltyrtc:saltyrtc-task-webrtc:0.18.1'
 ```
 
 Maven:
@@ -29,7 +29,7 @@ Maven:
 <dependency>
   <groupId>org.saltyrtc</groupId>
   <artifactId>saltyrtc-task-webrtc</artifactId>
-  <version>0.18.0</version>
+  <version>0.18.1</version>
   <type>pom</type>
 </dependency>
 ```
