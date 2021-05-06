@@ -8,10 +8,10 @@
 
 package org.saltyrtc.tasks.webrtc.utils;
 
-import com.goterl.lazycode.lazysodium.LazySodiumJava;
-import com.goterl.lazycode.lazysodium.SodiumJava;
-import com.goterl.lazycode.lazysodium.interfaces.Box;
-import com.goterl.lazycode.lazysodium.interfaces.SecretBox;
+import com.goterl.lazysodium.LazySodiumJava;
+import com.goterl.lazysodium.SodiumJava;
+import com.goterl.lazysodium.interfaces.Box;
+import com.goterl.lazysodium.interfaces.SecretBox;
 import org.saltyrtc.client.annotations.NonNull;
 import org.saltyrtc.client.crypto.CryptoException;
 import org.saltyrtc.client.crypto.CryptoInstance;

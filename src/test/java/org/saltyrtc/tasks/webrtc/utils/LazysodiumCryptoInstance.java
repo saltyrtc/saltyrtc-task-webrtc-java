@@ -8,16 +8,16 @@
 
 package org.saltyrtc.tasks.webrtc.utils;
 
-import com.goterl.lazycode.lazysodium.LazySodiumJava;
-import com.goterl.lazycode.lazysodium.SodiumJava;
-import com.goterl.lazycode.lazysodium.interfaces.Box;
+import com.goterl.lazysodium.LazySodiumJava;
+import com.goterl.lazysodium.SodiumJava;
+import com.goterl.lazysodium.interfaces.Box;
 import org.saltyrtc.client.annotations.NonNull;
 import org.saltyrtc.client.crypto.CryptoException;
 import org.saltyrtc.client.crypto.CryptoInstance;
 import org.saltyrtc.client.crypto.CryptoProvider;
 
-import static com.goterl.lazycode.lazysodium.interfaces.Box.BEFORENMBYTES;
-import static com.goterl.lazycode.lazysodium.interfaces.Box.MACBYTES;
+import static com.goterl.lazysodium.interfaces.Box.BEFORENMBYTES;
+import static com.goterl.lazysodium.interfaces.Box.MACBYTES;
 
 /**
  * An implementation of the CryptoInstance interface for lazysodium-java.

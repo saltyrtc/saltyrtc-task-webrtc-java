@@ -30,13 +30,12 @@ ext {
 // In this section you declare where to find the dependencies of your project
 repositories {
     mavenCentral()
-    jcenter() // TODO: remove
 }
 
 // In this section you declare the dependencies for your production and test code
 dependencies {
     // SaltyRTC
-    implementation('org.saltyrtc.client:saltyrtc-client:[0.14,0.15)') {
+    implementation('org.saltyrtc:saltyrtc-client:[0.14.1,0.15)') {
         exclude group: 'org.json'
         exclude module: 'msgpack-core'
         exclude module: 'jackson-dataformat-msgpack'
@@ -55,10 +54,10 @@ dependencies {
     }
 
     // Dependency: Binary chunking
-    implementation 'org.saltyrtc.chunked-dc:chunked-dc:[1.0,2.0)'
+    implementation 'org.saltyrtc:chunked-dc:[1.0,2.0)'
 
     // Test dependencies
-    testImplementation 'com.goterl.lazycode:lazysodium-java:3.3.0'
+    testImplementation 'com.goterl:lazysodium-java:5.0.1'
     testImplementation 'org.slf4j:slf4j-simple:[1.7,2.0)'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.4.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.4.0'
