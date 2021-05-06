@@ -1,6 +1,6 @@
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
     }
     dependencies {
         classpath 'org.owasp:dependency-check-gradle:5.3.2'
@@ -11,25 +11,26 @@ plugins {
     // Base
     id 'java'
 
-    // Publishing on bintray
-    id 'maven'
+    // Publishing
     id 'maven-publish'
-    id 'com.jfrog.bintray' version '1.8.4'
+    id 'signing'
 }
 
-apply plugin: 'maven'
 apply plugin: 'org.owasp.dependencycheck'
 
-def app_version = '0.18.0'
-
-// Java source & target version
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
+ext {
+    groupId = 'org.saltyrtc'
+    artifactId = 'saltyrtc-task-webrtc'
+    libraryVersion = '0.18.0'
+}
+
 // In this section you declare where to find the dependencies of your project
 repositories {
-    jcenter()
-    maven { url "https://dl.bintray.com/terl/lazysodium-maven" }
+    mavenCentral()
+    jcenter() // TODO: remove
 }
 
 // In this section you declare the dependencies for your production and test code
@@ -96,56 +97,67 @@ artifacts {
     archives sourcesJar, javadocJar
 }
 
-// Publishing
 publishing {
     publications {
         SaltyRTC(MavenPublication) {
             from components.java
-            groupId 'org.saltyrtc.tasks.webrtc'
-            artifactId 'saltyrtc-task-webrtc'
-            version app_version
+
             artifact sourcesJar
             artifact javadocJar
+
+            groupId = project.ext.groupId
+            artifactId = project.ext.artifactId
+            version = project.ext.libraryVersion
+
+            pom {
+                name = 'SaltyRTC WebRTC Task'
+                description = 'Java WebRTC Task library for SaltyRTC'
+                url = 'https://saltyrtc.org/'
+
+                scm {
+                    url = 'https://github.com/saltyrtc/saltyrtc-task-webrtc-java.git'
+                }
+
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'LICENSE-APACHE'
+                    }
+                    license {
+                        name = 'The MIT License'
+                        url = 'LICENSE-MIT'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'db'
+                        name = 'Danilo Bargen'
+                        email = 'danilo.bargen@threema.ch'
+                    }
+                }
+            }
         }
     }
-}
 
-// Upload to Bintray
-bintray {
-    user = System.getenv('BINTRAY_USER')
-    key = System.getenv('BINTRAY_KEY')
-    publications = ['SaltyRTC']
-    pkg {
-        repo = 'maven'
-        name = 'saltyrtc-task-webrtc'
-        userOrg = 'saltyrtc'
-        desc = 'WebRTC Task for SaltyRTC.'
-        websiteUrl = 'https://saltyrtc.org/'
-        issueTrackerUrl = 'https://github.com/saltyrtc/saltyrtc-task-webrtc-java/issues'
-        vcsUrl = 'https://github.com/saltyrtc/saltyrtc-task-webrtc-java.git'
-        githubRepo = 'saltyrtc/saltyrtc-task-webrtc-java'
-        publicDownloadNumbers = true
-        licenses = ['MIT', 'Apache-2.0']
-        labels = ['saltyrtc', 'webrtc', 'data channels', 'signaling', 'secure']
-        version {
-            name = app_version
-            desc = 'SaltyRTC WebRTC Task v${app_version}'
-            released = new Date()
-            vcsTag = 'v${app_version}'
-        }
-    }
-}
-
-// Upload to local Maven repo for testing
-uploadArchives {
     repositories {
-        mavenDeployer {
-            repository(url: uri('/tmp/maven/'))
-            pom.version = app_version
-            pom.groupId = 'org.saltyrtc.tasks.webrtc'
-            pom.artifactId = 'saltyrtc-task-webrtc'
+        maven {
+            def releasesRepoUrl = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
+            def snapshotsRepoUrl = 'https://s01.oss.sonatype.org/content/repositories/snapshots'
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')) {
+                credentials {
+                    username ossrhUsername
+                    password ossrhPassword
+                }
+            }
         }
     }
+}
+
+signing {
+    useGpgCmd() // Use gpg-agent. For config options, see `gradle.properties`.
+    sign publishing.publications.SaltyRTC
 }
 
 dependencyCheck {
